@@ -1,6 +1,5 @@
 #include <iostream>
-#include <string>
-#include <Windows.h> 
+#include <string> 
 
 void OutString(std::string message) {
     std::cout << message;
