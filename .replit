@@ -1,2 +1,3 @@
 language = "cpp"
 run = "clang++-7 -pthread -std=c++17 ConsoleChess/Main.cpp -o main && ./main"
+onBoot = "setfont Uni2-Terminus16"
