@@ -2,9 +2,10 @@
 #include <string> 
 
 const int gridAmount = 8;
-const int yOverflow = 9; //9 vertical lines add extra space that needs to be accounted for when drawing horizontal line
 const int xSpacing = 8;
 const int ySpacing = 3;
+const int yLineOverflow = 9; //the vertical lines displace x axis by 9 spaces
+const int pieceOverflow = 1; //each board piece displaces x axis by 1 space
 
 void out(std::string message) {
     std::cout << message;
@@ -20,13 +21,13 @@ std::string generateWhitespace(int spacing) {
 }
 
 void printXGridline() {
-    for (int i=0; i < gridAmount * xSpacing + yOverflow; i++) {
+    for (int i=0; i < (gridAmount * xSpacing) + (gridAmount * pieceOverflow) + yLineOverflow; i++) {
         out("―");
     } 
 }
 
 void printYGridline() {
-    std::string spacing = generateWhitespace(gridAmount);
+    std::string spacing = generateWhitespace(gridAmount + pieceOverflow);
 
     for (int i = 0; i < ySpacing; i++) {
         out("|");
