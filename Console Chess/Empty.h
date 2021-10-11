@@ -1,8 +1,5 @@
 #pragma once
-#include <string>
-class Empty
+#include "BoardItem.h"
+class Empty: BoardItem
 {
-	public:
-		std::string name;
-		std::string icon;
 };

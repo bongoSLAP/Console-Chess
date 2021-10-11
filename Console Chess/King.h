@@ -1,8 +1,5 @@
 #pragma once
-#include <string>
-class King 
+#include "Piece.h"
+class King: Piece
 {
-	public: 
-		std::string name;
-		std::string icon;
 };
