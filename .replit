@@ -1,2 +1,2 @@
-language = "bash"
-run = ""
+language = "cpp"
+run = "g++ ConsoleChess.cpp -o myProg"
