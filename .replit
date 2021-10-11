@@ -1,2 +1,2 @@
 language = "cpp"
-run = "g++ ConsoleChess.cpp -o myProg"
+run = "g++ ConsoleChess.cpp -o main && ./main"
