@@ -40,13 +40,17 @@ void printYGridline() {
     }
 }
 
-int main()
-{
-    for (int i = 0; i < gridAmount; i++) {
+void drawBoard() {
+        for (int i = 0; i < gridAmount; i++) {
         printXGridline();
         out("\n");
         printYGridline();
     }
 
     printXGridline();
+}
+
+int main()
+{
+    drawBoard();
 }
