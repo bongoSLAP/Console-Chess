@@ -23,9 +23,9 @@ void out(std::string message) {
     std::cout << message;
 }
 
-std::string generateWhitespace(int spacing) {
+std::string generateIconSpacing(std::vector<std::vector<BoardItem>> board, int spacing) {
     std::string whitespace = "";
-    for (int i = 0; i < spacing; i ++) {
+    for (int i = 0; i < spacing; i++) {
         whitespace += " ";
     }
 
@@ -38,13 +38,21 @@ void printXGridline() {
     } 
 }
 
-void printYGridline() {
-    std::string spacing = generateWhitespace(gridSpacing + pieceOverflow);
+void printYGridline(std::vector<std::vector<BoardItem>> board) {
+    std::string spacing;
 
     for (int i = 0; i < yLength; i++) {
         out("|");
 
         for (int j = 0; j < squaresOnAxes; j++) {
+            spacing = generateIconSpacing(board, gridSpacing + pieceOverflow);
+
+            if (i == 1) {
+                spacing = generateIconSpacing(board, gridSpacing/2);
+                out(spacing + "a");
+                
+            }
+
             out(spacing + "|");
         }
 
@@ -52,11 +60,11 @@ void printYGridline() {
     }
 }
 
-void drawBoard() {
+void drawBoard(std::vector<std::vector<BoardItem>> board) {
         for (int i = 0; i < squaresOnAxes; i++) {
             printXGridline();
             out("\n");
-            printYGridline();
+            printYGridline(board);
         }
 
     printXGridline();
@@ -117,7 +125,6 @@ std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
         out(majorPieceRow[i].isDark + " ");
     }
     */
-    
 
     return majorPieceRow;
 }
@@ -147,7 +154,7 @@ std::vector<BoardItem> generateEmptyRow() {
     return emptyRow;
 }
 
-std::string BoolToString(bool b) {
+std::string boolToString(bool b) {
   return b ? "true" : "false";
 }
 
@@ -168,7 +175,7 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     for (int j = 0; j < board.size(); j++) {
         for (int k = 0; k < board[j].size(); k++) { 
             out(board[j][k].name + " ");
-            //out(BoolToString(board[j][k].isDark) + " ");
+            //out(boolToString(board[j][k].isDark) + " ");
         }
         
         out("\n");
@@ -179,7 +186,7 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
 
 int main()
 {
-    drawBoard();
-    initialiseBoardStructure();
+    std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
+    drawBoard(board);
 }
 
