@@ -51,7 +51,7 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
             spacing = generateIconSpacing(gridSpacing + pieceOverflow);
 
             if (i == 1) {
-                spacing = generateIconSpacing(gridSpacing/2);
+                spacing = generateIconSpacing(gridSpacing / 2);
                 out(spacing + board[rowCount][itemInRowCount].icon);
 
                 itemInRowCount += 1;

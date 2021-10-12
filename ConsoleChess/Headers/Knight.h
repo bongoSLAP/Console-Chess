@@ -9,10 +9,10 @@ class Knight: public BoardItem
 
         void setIcon() {
             if (this -> isDark) {
-                this -> icon = "♞";
+                this -> icon = "♘";
                 return;
             }
             
-            this -> icon = "♘";
+            this -> icon = "♞";
         }
 };
