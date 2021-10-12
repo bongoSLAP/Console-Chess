@@ -19,11 +19,14 @@ const int yLength = 3;
 const int yLineOverflow = 9; //the vertical lines displace x axis by 9 spaces
 const int pieceOverflow = 1; //each board piece displaces x axis by 1 space
 
+int rowCount = 0;
+int itemInRowCount = 0;
+
 void out(std::string message) {
     std::cout << message;
 }
 
-std::string generateIconSpacing(std::vector<std::vector<BoardItem>> board, int spacing) {
+std::string generateIconSpacing(int spacing) {
     std::string whitespace = "";
     for (int i = 0; i < spacing; i++) {
         whitespace += " ";
@@ -45,12 +48,18 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
         out("|");
 
         for (int j = 0; j < squaresOnAxes; j++) {
-            spacing = generateIconSpacing(board, gridSpacing + pieceOverflow);
+            spacing = generateIconSpacing(gridSpacing + pieceOverflow);
 
             if (i == 1) {
-                spacing = generateIconSpacing(board, gridSpacing/2);
-                out(spacing + "a");
-                
+                spacing = generateIconSpacing(gridSpacing/2);
+                out(spacing + board[rowCount][itemInRowCount].icon);
+
+                itemInRowCount += 1;
+
+                if (itemInRowCount % squaresOnAxes == 0 && rowCount < 9) {
+                    rowCount += 1;
+                    itemInRowCount = 0;
+                }
             }
 
             out(spacing + "|");
@@ -61,11 +70,11 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
 }
 
 void drawBoard(std::vector<std::vector<BoardItem>> board) {
-        for (int i = 0; i < squaresOnAxes; i++) {
-            printXGridline();
-            out("\n");
-            printYGridline(board);
-        }
+    for (int i = 0; i < squaresOnAxes; i++) {
+        printXGridline();
+        out("\n");
+        printYGridline(board);
+    }
 
     printXGridline();
     out("\n");
@@ -75,48 +84,62 @@ std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
     std::vector<BoardItem> majorPieceRow;
 
     Rook leftRook;
-    leftRook.setName();
     leftRook.isDark = isDark;
+    leftRook.setName();
+    leftRook.setIcon();
     majorPieceRow.push_back(leftRook);
 
     Knight leftKnight;
-    leftKnight.setName();
     leftKnight.isDark = isDark;
+    leftKnight.setName();
+    leftKnight.setIcon();
     majorPieceRow.push_back(leftKnight);
 
     Bishop leftBishop;
-    leftBishop.setName();
     leftBishop.isDark = isDark;
+    leftBishop.setName();
+    leftBishop.setIcon();
     majorPieceRow.push_back(leftBishop);
 
     Queen queen;
-    queen.setName();
     queen.isDark = isDark;
+    queen.setName();
+    queen.setIcon();
     majorPieceRow.push_back(queen);
     
     King king;
-    king.setName();
     king.isDark = isDark;
+    king.setName();
+    king.setIcon();
     majorPieceRow.push_back(king);
 
     Bishop rightBishop;
-    rightBishop.setName();
     rightBishop.isDark = isDark;
+    rightBishop.setName();
+    rightBishop.setIcon();
     majorPieceRow.push_back(rightBishop);
 
     Knight rightKnight;
-    rightKnight.setName();
     rightKnight.isDark = isDark;
+    rightKnight.setName();
+    rightKnight.setIcon();
     majorPieceRow.push_back(rightKnight);
 
     Rook rightRook;
-    rightRook.setName();
     rightRook.isDark = isDark;
+    rightRook.setName();
+    rightRook.setIcon();
     majorPieceRow.push_back(rightRook);
 
     /*
     for (int i = 0; i < majorPieceRow.size(); i++) {
         out(majorPieceRow[i].name + " ");
+    }
+    */
+
+    /*
+    for (int i = 0; i < majorPieceRow.size(); i++) {
+        out(majorPieceRow[i].isDark + " ");
     }
     */
 
@@ -134,8 +157,9 @@ std::vector<BoardItem> generatePawnRow(bool isDark) {
 
     for (int i = 0; i < squaresOnAxes; i++) {
         Pawn pawn;
-        pawn.setName();
         pawn.isDark = isDark;
+        pawn.setName();
+        pawn.setIcon();
         pawnRow.push_back(pawn);
     }
 
@@ -148,6 +172,7 @@ std::vector<BoardItem> generateEmptyRow() {
     for (int i = 0; i < squaresOnAxes; i++) {
         Empty empty;
         empty.setName();
+        empty.setIcon();
         emptyRow.push_back(empty);
     }
 
@@ -172,14 +197,17 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     board.push_back(generatePawnRow(false));
     board.push_back(generateMajorPieceRow(false));
 
+    /*
     for (int j = 0; j < board.size(); j++) {
         for (int k = 0; k < board[j].size(); k++) { 
-            out(board[j][k].name + " ");
+            //out(board[j][k].name + " ");
             //out(boolToString(board[j][k].isDark) + " ");
+            //out(board[j][k].icon + " ");
         }
         
         out("\n");
     }
+    */
 
     return board;
 } 

@@ -6,4 +6,8 @@ class Empty: public BoardItem
         void setName() {
             this -> name = "EMTY";
         }
+
+        void setIcon() {
+            this -> icon = " ";
+        }
 };

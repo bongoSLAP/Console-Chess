@@ -6,4 +6,13 @@ class Knight: public BoardItem
         void setName() {
             this -> name = "KNHT";
         }   
+
+        void setIcon() {
+            if (this -> isDark) {
+                this -> icon = "♞";
+                return;
+            }
+            
+            this -> icon = "♘";
+        }
 };

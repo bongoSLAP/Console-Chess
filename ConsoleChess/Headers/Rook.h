@@ -6,4 +6,13 @@ class Rook: public BoardItem
         void setName() {
             this -> name = "ROOK";
         }
+
+        void setIcon() {
+            if (this -> isDark) {
+                this -> icon = "♜";
+                return;
+            }
+
+            this -> icon = "♖";
+        }
 };
