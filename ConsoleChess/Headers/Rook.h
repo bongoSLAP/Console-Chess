@@ -1,5 +1,10 @@
 #pragma once
 #include "Piece.h"
-class Rook: Piece
+
+class Rook: public Piece
 {
+    public:
+        void setName() {
+            this -> name = "ROOK";
+        }
 };

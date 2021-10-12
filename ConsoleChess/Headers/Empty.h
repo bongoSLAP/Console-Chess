@@ -1,5 +1,10 @@
 #pragma once
 #include "BoardItem.h"
-class Empty: BoardItem
+
+class Empty: public BoardItem
 {
+    public:
+        void setName() {
+            this -> name = "EMTY";
+        }
 };
