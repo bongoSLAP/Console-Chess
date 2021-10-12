@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string> 
 #include <vector>
+#include <variant>
+
 #include "Headers/King.h"
 #include "Headers/Queen.h"
 #include "Headers/Bishop.h"
@@ -64,34 +66,42 @@ std::vector<Piece> generateMajorPieceRow(bool isDark) {
 
     Rook leftRook;
     leftRook.setName();
+    leftRook.isDark = isDark;
     majorPieceRow.push_back(leftRook);
 
     Knight leftKnight;
     leftKnight.setName();
+    leftKnight.isDark = isDark;
     majorPieceRow.push_back(leftKnight);
 
     Bishop leftBishop;
     leftBishop.setName();
+    leftBishop.isDark = isDark;
     majorPieceRow.push_back(leftBishop);
 
     Queen queen;
     queen.setName();
+    queen.isDark = isDark;
     majorPieceRow.push_back(queen);
     
     King king;
     king.setName();
+    king.isDark = isDark;
     majorPieceRow.push_back(king);
 
     Bishop rightBishop;
     rightBishop.setName();
+    rightBishop.isDark = isDark;
     majorPieceRow.push_back(rightBishop);
 
     Knight rightKnight;
     rightKnight.setName();
+    rightKnight.isDark = isDark;
     majorPieceRow.push_back(rightKnight);
 
     Rook rightRook;
     rightRook.setName();
+    rightRook.isDark = isDark;
     majorPieceRow.push_back(rightRook);
 
     for (int i = 0; i < majorPieceRow.size(); i++) {
@@ -101,7 +111,41 @@ std::vector<Piece> generateMajorPieceRow(bool isDark) {
     return majorPieceRow;
 }
 
+std::vector<Piece> generatePawnRow(bool isDark) {
+    std::vector<Piece> pawnRow;
+
+    for (int i = 0; i < gridAmount; i++) {
+        Pawn pawn;
+        pawn.setName();
+        pawn.isDark = isDark;
+        pawnRow.push_back(pawn);
+    }
+
+    return pawnRow;
+}
+
+std::vector<BoardItem> generateEmptyRow() {
+    std::vector<BoardItem> emptyRow;
+
+    for (int i = 0; i < gridAmount; i++) {
+        Empty empty;
+        empty.setName();
+        emptyRow.push_back(empty);
+    }
+
+    return emptyRow;
+}
+
+std::vector<std::variant<Piece, BoardItem>> initialiseBoard() {
+    std::vector<std::variant<Piece, BoardItem>> board;
+
+    
+
+    return board;
+} 
+
 int main()
 {
     drawBoard();
+    generateMajorPieceRow(false);
 }
