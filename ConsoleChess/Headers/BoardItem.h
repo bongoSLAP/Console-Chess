@@ -6,4 +6,7 @@ class BoardItem
 	public:
 		std::string name;
 		std::string icon;
+        bool isDark;
+        
+        
 };

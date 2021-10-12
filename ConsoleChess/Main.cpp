@@ -3,6 +3,7 @@
 #include <vector>
 #include <variant>
 
+#include "Headers/BoardItem.h"
 #include "Headers/King.h"
 #include "Headers/Queen.h"
 #include "Headers/Bishop.h"
@@ -61,8 +62,8 @@ void drawBoard() {
     out("\n");
 }
 
-std::vector<Piece> generateMajorPieceRow(bool isDark) {
-    std::vector<Piece> majorPieceRow;
+std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
+    std::vector<BoardItem> majorPieceRow;
 
     Rook leftRook;
     leftRook.setName();
@@ -104,15 +105,24 @@ std::vector<Piece> generateMajorPieceRow(bool isDark) {
     rightRook.isDark = isDark;
     majorPieceRow.push_back(rightRook);
 
+    /*
     for (int i = 0; i < majorPieceRow.size(); i++) {
         out(majorPieceRow[i].name + " ");
     }
+    */
+
+    /*
+    for (int i = 0; i < majorPieceRow.size(); i++) {
+        out(majorPieceRow[i].isDark + " ");
+    }
+    */
+    
 
     return majorPieceRow;
 }
 
-std::vector<Piece> generatePawnRow(bool isDark) {
-    std::vector<Piece> pawnRow;
+std::vector<BoardItem> generatePawnRow(bool isDark) {
+    std::vector<BoardItem> pawnRow;
 
     for (int i = 0; i < gridAmount; i++) {
         Pawn pawn;
@@ -136,10 +146,32 @@ std::vector<BoardItem> generateEmptyRow() {
     return emptyRow;
 }
 
-std::vector<std::variant<Piece, BoardItem>> initialiseBoard() {
-    std::vector<std::variant<Piece, BoardItem>> board;
+std::string BoolToString(bool b) {
+  return b ? "true" : "false";
+}
 
-    
+std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
+    std::vector<std::vector<BoardItem>> board;
+    int emptyRowAmount = 4;
+
+    board.push_back(generateMajorPieceRow(true));
+    board.push_back(generatePawnRow(true));
+
+    for (int i = 0; i < emptyRowAmount; i++) {
+        board.push_back(generateEmptyRow());
+    }
+
+    board.push_back(generatePawnRow(false));
+    board.push_back(generateMajorPieceRow(false));
+
+    for (int j = 0; j < board.size(); j++) {
+        for (int k = 0; k < board[j].size(); k++) { 
+            out(board[j][k].name + " ");
+            out(BoolToString(board[j][k].isDark) + " ");
+        }
+        
+        out("\n");
+    }
 
     return board;
 } 
@@ -147,5 +179,6 @@ std::vector<std::variant<Piece, BoardItem>> initialiseBoard() {
 int main()
 {
     drawBoard();
-    generateMajorPieceRow(false);
+    initialiseBoardStructure();
 }
+

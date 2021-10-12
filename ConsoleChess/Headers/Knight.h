@@ -1,7 +1,7 @@
 #pragma once
-#include "Piece.h"
+#include "BoardItem.h"
 
-class Knight: public Piece
+class Knight: public BoardItem
 {
     public:
         void setName() {
