@@ -1,5 +1,4 @@
 #pragma once
-#include "BoardItem.h"
 
 class Empty: public BoardItem
 {

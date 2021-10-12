@@ -12,9 +12,10 @@
 #include "Headers/Pawn.h"
 #include "Headers/Empty.h"
 
-const int gridAmount = 8;
-const int xSpacing = 8;
-const int ySpacing = 3;
+const int squaresOnAxes = 8;
+const int gridSpacing = 6;
+const int xWidth = 8;
+const int yLength = 3;
 const int yLineOverflow = 9; //the vertical lines displace x axis by 9 spaces
 const int pieceOverflow = 1; //each board piece displaces x axis by 1 space
 
@@ -32,18 +33,18 @@ std::string generateWhitespace(int spacing) {
 }
 
 void printXGridline() {
-    for (int i=0; i < (gridAmount * xSpacing) + (gridAmount * pieceOverflow) + yLineOverflow; i++) {
+    for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) {
         out("―");
     } 
 }
 
 void printYGridline() {
-    std::string spacing = generateWhitespace(gridAmount + pieceOverflow);
+    std::string spacing = generateWhitespace(gridSpacing + pieceOverflow);
 
-    for (int i = 0; i < ySpacing; i++) {
+    for (int i = 0; i < yLength; i++) {
         out("|");
 
-        for (int j = 0; j < gridAmount; j++) {
+        for (int j = 0; j < squaresOnAxes; j++) {
             out(spacing + "|");
         }
 
@@ -52,7 +53,7 @@ void printYGridline() {
 }
 
 void drawBoard() {
-        for (int i = 0; i < gridAmount; i++) {
+        for (int i = 0; i < squaresOnAxes; i++) {
             printXGridline();
             out("\n");
             printYGridline();
@@ -124,7 +125,7 @@ std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
 std::vector<BoardItem> generatePawnRow(bool isDark) {
     std::vector<BoardItem> pawnRow;
 
-    for (int i = 0; i < gridAmount; i++) {
+    for (int i = 0; i < squaresOnAxes; i++) {
         Pawn pawn;
         pawn.setName();
         pawn.isDark = isDark;
@@ -137,7 +138,7 @@ std::vector<BoardItem> generatePawnRow(bool isDark) {
 std::vector<BoardItem> generateEmptyRow() {
     std::vector<BoardItem> emptyRow;
 
-    for (int i = 0; i < gridAmount; i++) {
+    for (int i = 0; i < squaresOnAxes; i++) {
         Empty empty;
         empty.setName();
         emptyRow.push_back(empty);
@@ -167,7 +168,7 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     for (int j = 0; j < board.size(); j++) {
         for (int k = 0; k < board[j].size(); k++) { 
             out(board[j][k].name + " ");
-            out(BoolToString(board[j][k].isDark) + " ");
+            //out(BoolToString(board[j][k].isDark) + " ");
         }
         
         out("\n");
