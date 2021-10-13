@@ -38,11 +38,29 @@ std::string generateIconSpacing(int spacing) {
 void printXGridline() {
     for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) {
         out("―");
-    } 
+    }
+
+    out("\n");
+}
+
+void printXLabels() {
+    std::string spacing = generateIconSpacing(gridSpacing / 2);
+    std::vector labels = {"a", "b", "c", "d", "e", "f", "g", "h"};
+    int labelIndex = 0;
+
+    for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) {
+        if (i % squaresOnAxes == 0 && i != 0) {
+            out(" " + spacing + labels[labelIndex] + spacing);
+            labelIndex += 1;
+        }
+    }
+
+    out("\n\n");
 }
 
 void printYGridline(std::vector<std::vector<BoardItem>> board) {
     std::string spacing;
+    int midPoint = 1;
 
     for (int i = 0; i < yLength; i++) {
         out("|");
@@ -50,19 +68,23 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
         for (int j = 0; j < squaresOnAxes; j++) {
             spacing = generateIconSpacing(gridSpacing + pieceOverflow);
 
-            if (i == 1) {
+            if (i == midPoint) {
                 spacing = generateIconSpacing(gridSpacing / 2);
                 out(spacing + board[rowCount][itemInRowCount].icon);
 
                 itemInRowCount += 1;
 
-                if (itemInRowCount % squaresOnAxes == 0 && rowCount < 9) {
+                if (itemInRowCount % squaresOnAxes == 0) {
                     rowCount += 1;
                     itemInRowCount = 0;
                 }
             }
 
             out(spacing + "|");
+        }
+
+        if (i == midPoint) {
+            out(spacing + std::to_string(9-rowCount)); //9 inverts numbers
         }
 
         out("\n");
@@ -72,12 +94,11 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
 void drawBoard(std::vector<std::vector<BoardItem>> board) {
     for (int i = 0; i < squaresOnAxes; i++) {
         printXGridline();
-        out("\n");
         printYGridline(board);
     }
 
     printXGridline();
-    out("\n");
+    printXLabels();
 }
 
 std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
@@ -134,12 +155,6 @@ std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
     /*
     for (int i = 0; i < majorPieceRow.size(); i++) {
         out(majorPieceRow[i].name + " ");
-    }
-    */
-
-    /*
-    for (int i = 0; i < majorPieceRow.size(); i++) {
-        out(majorPieceRow[i].isDark + " ");
     }
     */
 
