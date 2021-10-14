@@ -26,6 +26,14 @@ void out(std::string message) {
     std::cout << message;
 }
 
+std::string input(std::string message) {
+    std::string put;
+
+    out(message);
+    std::getline(std::cin, put);
+    return put;
+}
+
 std::string generateIconSpacing(int spacing) {
     std::string whitespace = "";
     for (int i = 0; i < spacing; i++) {
@@ -222,6 +230,7 @@ int main()
     board = assignStartPositions(board);
     drawBoard(board);
 
+    /*
     for (int j = 0; j < board.size(); j++) {
         for (int k = 0; k < board[j].size(); k++) { 
             out(board[j][k].position + " ");
@@ -229,10 +238,24 @@ int main()
         
         out("\n");
     }
+    */
 
+    std::string move = input("Make your move: ");
+
+    for (int i = 0; i < board.size(); i++) {
+        for (int j = 0; j < board[i].size(); j++) {
+            if (board[i][j].position == move.substr(0, 2)) {
+                std::pair<int, int> vector = board[i][j].createColumnVector(move.substr(3, 5));
+                out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+            }
+        }
+    }
+
+/*
     board[0][0].position = "a8";
     std::pair<int, int> vector = board[0][0].createColumnVector("g3");
 
     out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+*/
 }
 
