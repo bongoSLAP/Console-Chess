@@ -152,18 +152,6 @@ std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
     rightRook.setIcon();
     majorPieceRow.push_back(rightRook);
 
-    /*
-    for (int i = 0; i < majorPieceRow.size(); i++) {
-        out(majorPieceRow[i].name + " ");
-    }
-    */
-
-    /*
-    for (int i = 0; i < majorPieceRow.size(); i++) {
-        out(majorPieceRow[i].isDark + " ");
-    }
-    */
-
     return majorPieceRow;
 }
 
@@ -212,18 +200,6 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     board.push_back(generatePawnRow(false));
     board.push_back(generateMajorPieceRow(false));
 
-    /*
-    for (int j = 0; j < board.size(); j++) {
-        for (int k = 0; k < board[j].size(); k++) { 
-            //out(board[j][k].name + " ");
-            //out(boolToString(board[j][k].isDark) + " ");
-            //out(board[j][k].icon + " ");
-        }
-        
-        out("\n");
-    }
-    */
-
     return board;
 } 
 
@@ -231,16 +207,10 @@ std::vector<std::vector<BoardItem>> assignStartPositions(std::vector<std::vector
     std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
     std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"};
 
-    int xCount = 0;
-    int yCount = 0;
-
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
-            board[i][j].position = xAxisLabels[xCount] + yAxisLabels[yCount];
-            xCount ++;
+            board[i][j].position = xAxisLabels[i] + yAxisLabels[j];
         }
-        xCount = 0;
-        yCount++;
     }
 
     return board;
@@ -249,8 +219,8 @@ std::vector<std::vector<BoardItem>> assignStartPositions(std::vector<std::vector
 int main()
 {
     std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
-    drawBoard(board);
     board = assignStartPositions(board);
+    drawBoard(board);
 
     for (int j = 0; j < board.size(); j++) {
         for (int k = 0; k < board[j].size(); k++) { 
