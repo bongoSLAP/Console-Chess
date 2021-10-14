@@ -43,21 +43,6 @@ void printXGridline() {
     out("\n");
 }
 
-void printXLabels() {
-    std::string spacing = generateIconSpacing(gridSpacing / 2);
-    std::vector labels = {"a", "b", "c", "d", "e", "f", "g", "h"};
-    int labelIndex = 0;
-
-    for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) {
-        if (i % squaresOnAxes == 0 && i != 0) {
-            out(" " + spacing + labels[labelIndex] + spacing);
-            labelIndex += 1;
-        }
-    }
-
-    out("\n\n");
-}
-
 void printYGridline(std::vector<std::vector<BoardItem>> board) {
     std::string spacing;
     int midPoint = 1;
@@ -89,6 +74,21 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
 
         out("\n");
     }
+}
+
+void printXLabels() {
+    std::string spacing = generateIconSpacing(gridSpacing / 2);
+    std::vector labels = {"a", "b", "c", "d", "e", "f", "g", "h"};
+    int labelIndex = 0;
+
+    for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) {
+        if (i % squaresOnAxes == 0 && i != 0) {
+            out(" " + spacing + labels[labelIndex] + spacing);
+            labelIndex += 1;
+        }
+    }
+
+    out("\n\n");
 }
 
 void drawBoard(std::vector<std::vector<BoardItem>> board) {
@@ -231,5 +231,8 @@ int main()
 {
     std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
     drawBoard(board);
+
+    board[0][0].position = "a8";
+    board[0][0].createColumnVector("a4");
 }
 
