@@ -233,6 +233,8 @@ int main()
     drawBoard(board);
 
     board[0][0].position = "a8";
-    board[0][0].createColumnVector("a4");
+    std::pair<int, int> vector = board[0][0].createColumnVector("g4");
+
+    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second));
 }
 
