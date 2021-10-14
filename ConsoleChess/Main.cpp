@@ -57,10 +57,10 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
                 spacing = generateIconSpacing(gridSpacing / 2);
                 out(spacing + board[rowCount][itemInRowCount].icon);
 
-                itemInRowCount += 1;
+                itemInRowCount ++;
 
                 if (itemInRowCount % squaresOnAxes == 0) {
-                    rowCount += 1;
+                    rowCount ++;
                     itemInRowCount = 0;
                 }
             }
@@ -84,7 +84,7 @@ void printXLabels() {
     for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) {
         if (i % squaresOnAxes == 0 && i != 0) {
             out(" " + spacing + labels[labelIndex] + spacing);
-            labelIndex += 1;
+            labelIndex ++;
         }
     }
 
@@ -227,10 +227,38 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     return board;
 } 
 
+std::vector<std::vector<BoardItem>> assignStartPositions(std::vector<std::vector<BoardItem>> board) {
+    std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
+    std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"};
+
+    int xCount = 0;
+    int yCount = 0;
+
+    for (int i = 0; i < board.size(); i++) {
+        for (int j = 0; j < board[i].size(); j++) {
+            board[i][j].position = xAxisLabels[xCount] + yAxisLabels[yCount];
+            xCount ++;
+        }
+        xCount = 0;
+        yCount++;
+    }
+
+    return board;
+}
+
 int main()
 {
     std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
     drawBoard(board);
+    board = assignStartPositions(board);
+
+    for (int j = 0; j < board.size(); j++) {
+        for (int k = 0; k < board[j].size(); k++) { 
+            out(board[j][k].position + " ");
+        }
+        
+        out("\n");
+    }
 
     board[0][0].position = "a8";
     std::pair<int, int> vector = board[0][0].createColumnVector("g3");
