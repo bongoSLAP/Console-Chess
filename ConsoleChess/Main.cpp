@@ -107,6 +107,9 @@ void drawBoard(std::vector<std::vector<BoardItem>> board) {
 
     printXGridline();
     printXLabels();
+
+    rowCount = 0;
+    itemInRowCount = 0;
 }
 
 std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
@@ -213,12 +216,71 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
 
 std::vector<std::vector<BoardItem>> assignStartPositions(std::vector<std::vector<BoardItem>> board) {
     std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
-    std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"};
+    std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
 
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
             board[i][j].position = xAxisLabels[i] + yAxisLabels[j];
         }
+    }
+
+    return board;
+}
+
+std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board, std::string position) {
+    std::pair<int, int> indices;
+    indices.first = -1;
+    indices.second = -1;
+    out("0, 2: position.substr(0, 2): " + position.substr(0, 2) + "\n");
+
+    for (int i = 0; i < board.size(); i++) {
+        for (int j = 0; j < board[i].size(); j++) {
+            if (board[i][j].position == position.substr(0, 2)) {
+                indices.first = i;
+                indices.second = j;
+                out("name of found: " + board[i][j].name + "\n");
+                out("coords: " + std::to_string(i) + " " + std::to_string(j) + "\n");
+
+                return indices;
+            }
+        }
+    }
+
+    return indices;
+}
+
+std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> board, std::string positionFrom, std::string positionTo) {
+    std::pair<int, int> indexFrom = findIndexInVector(board, positionFrom);
+    std::pair<int, int> indexTo = findIndexInVector(board, positionTo);
+    BoardItem temp = board[indexTo.first][indexTo.second];
+    
+    //out(board[indexFrom.first][indexFrom.second].name + "\n");
+    //board[indexTo.first][indexTo.second] = board[indexFrom.first][indexFrom.second];
+    //out(board[indexTo.first][indexTo.second].name + "\n");
+
+    //board[indexTo.first][indexTo.second].position = positionTo;
+
+    //board[indexFrom.first][indexFrom.second] = temp;
+    //board[indexFrom.first][indexFrom.second].position = positionFrom;
+
+    for (int i = 0; i < board.size(); i++) {
+        out(std::to_string(i) + ": ");
+        for (int j = 0; j < board[i].size(); j++) {
+            out(board[i][j].name + " ");
+        }
+
+        out("\n");
+    }
+
+    out("\n");
+
+    for (int i = 0; i < board.size(); i++) {
+        out(std::to_string(i) + ": ");
+        for (int j = 0; j < board[i].size(); j++) {
+            out(board[i][j].position + " ");
+        }
+
+        out("\n");
     }
 
     return board;
@@ -230,26 +292,30 @@ int main()
     board = assignStartPositions(board);
     drawBoard(board);
 
-    /*
-    for (int j = 0; j < board.size(); j++) {
-        for (int k = 0; k < board[j].size(); k++) { 
-            out(board[j][k].position + " ");
-        }
-        
-        out("\n");
-    }
-    */
-
+/*
     std::string move = input("Make your move: ");
 
+    //VALIDATE INPUT
+
+    std::pair<int, int> indices = findIndexInVector(board, move);
+
+    std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(3, 5));
+    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+*/
+
+    board = swap(board, "c2", "f5");
+    //system("clear");
+    drawBoard(board);
+
+    /*
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
-            if (board[i][j].position == move.substr(0, 2)) {
-                std::pair<int, int> vector = board[i][j].createColumnVector(move.substr(3, 5));
-                out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-            }
+            out(board[i][j].name + " ");
         }
+
+        out("\n");
     }
+
 
 /*
     board[0][0].position = "a8";
