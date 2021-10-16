@@ -2,6 +2,9 @@
 #include <string> 
 #include <vector>
 #include <variant>
+#include <chrono>
+#include <thread>
+#include <regex>
 
 #include "Headers/BoardItem.h"
 #include "Headers/King.h"
@@ -96,7 +99,7 @@ void printXLabels() {
         }
     }
 
-    out("\n\n");
+    out("\n");
 }
 
 void drawBoard(std::vector<std::vector<BoardItem>> board) {
@@ -261,27 +264,85 @@ std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
+bool validateLength(std::string input) {
+    int acceptedLength = 4; // 2 chars each position, 1 char for whitespace
+
+    if (input.size() == acceptedLength) {
+        return true;
+    } 
+
+    out("\nThe length of input is invalid");
+    return false;
+}
+
+std::ptrdiff_t countOccurences(std::string input, std::string expressionString) {
+    std::regex expression(expressionString);
+
+    std::ptrdiff_t occurences(std::distance(
+        std::sregex_iterator(input.begin(), input.end(), expression),
+        std::sregex_iterator())
+    );
+
+    return occurences;
+}
+
+bool validateChars(std::string input) {
+    std::smatch matchChars;
+    std::regex charsExpression("[^a-f]");
+
+    std::smatch matchRepeats;
+    std::regex repeatsExpression("(.)\1{1,}");
+
+    if (std::regex_search(input, matchChars, charsExpression)) {
+        out("\nInvalid characters were input");
+        return false;
+    }
+    /*
+    if (countOccurences(input, "[0-9]") > 2 && countOccurences(input, "[a-f]") > 2) {
+        out("\nMore than 2 chars for a position were input");
+        return false;
+    }
+
+    if (std::regex_search(input, matchRepeats, repeatsExpression)) {
+        out("\nrepeated characters for a position were input");
+        return false;
+    }
+    */
+
+    return true;
+}
+
 int main()
 {
+    system("clear");
     std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
     board = assignStartPositions(board);
     drawBoard(board);
 
-/*
-    std::string move = input("Make your move: ");
+    //while(true) {
+        std::string move = input("\nMake your move: ");
 
-    //VALIDATE INPUT
+        if (validateLength(move) && validateChars(move)) {
+            std::pair<int, int> indices = findIndexInVector(board, move);
 
-    std::pair<int, int> indices = findIndexInVector(board, move);
+            std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(3, 5));
+            out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+        }
+        else {
+            out("\ninput is invalid, it should match the following pattern:\n<coordinate of piece to move> <space> <coordinate of where to move to>\ne.g d2 g5\n");
+        }
+    //}
 
-    std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(3, 5));
-    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-*/
 
-    board = swap(board, "c2", "f5");
-    //system("clear");
+
+    /*
+    board = swap(board, "d1", "a6");
+    std::chrono::milliseconds timespan(3000); // or whatever
+    std::this_thread::sleep_for(timespan);
+
+    system("clear");
     drawBoard(board);
-
+    */
     /*
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
@@ -290,13 +351,6 @@ int main()
 
         out("\n");
     }
-
-
-/*
-    board[0][0].position = "a8";
-    std::pair<int, int> vector = board[0][0].createColumnVector("g3");
-
-    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-*/
+    */
 }
 
