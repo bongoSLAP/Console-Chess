@@ -218,9 +218,11 @@ std::vector<std::vector<BoardItem>> assignStartPositions(std::vector<std::vector
     std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
     std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
 
+
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
-            board[i][j].position = xAxisLabels[i] + yAxisLabels[j];
+            //board[i][j].position = xAxisLabels[i] + yAxisLabels[j];
+            board[i][j].position = xAxisLabels[j] + yAxisLabels[i];
         }
     }
 
