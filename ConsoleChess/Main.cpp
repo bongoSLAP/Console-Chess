@@ -278,21 +278,20 @@ bool validateLength(std::string input) {
 
 bool validateChars(std::string input) {
     std::smatch matchChars;
-    std::regex charsExpression("[^0-9] [^a-f]");
+    std::regex charsExpression("[^0-8] [^a-h]");
 
     if (std::regex_search(input, matchChars, charsExpression)) {
-        out("\nInvalid characters were input");
         return false;
     }
 
-    std::regex digitsExpression("[^0-9]");
+    std::regex digitsExpression("[^0-8]");
 
     std::ptrdiff_t digitOccurences(std::distance(
         std::sregex_iterator(input.begin(), input.end(), digitsExpression),
         std::sregex_iterator())
     );
 
-    std::regex letterExpression("[^a-f]");
+    std::regex letterExpression("[^a-h]");
 
     std::ptrdiff_t lettersOccurences(std::distance(
         std::sregex_iterator(input.begin(), input.end(), letterExpression),
@@ -300,15 +299,6 @@ bool validateChars(std::string input) {
     );
     
     if (digitOccurences > 2 || lettersOccurences > 2) {
-        out("\nMore than 2 chars for a position were input");
-        return false;
-    }
-
-    std::smatch matchRepeats;
-    std::regex repeatsExpression("(.)\1{1,}");
-
-    if (std::regex_search(input, matchRepeats, repeatsExpression)) {
-        out("\nrepeated characters for a position were input");
         return false;
     }
     
@@ -325,7 +315,7 @@ int main()
     //while(true) {
         //std::string move = input("\nMake your move: ");
 
-        std::string move = "ddg6";
+        std::string move = "22g5";
 
         if (validateLength(move) && validateChars(move)) {
             out("\nvalid\n");
@@ -335,7 +325,7 @@ int main()
             //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
         }
         else {
-            out("\ninput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\ne.g d2 g5\n");
+            out("\ninput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\ne.g: d2g5\n");
         }
     //}
 
