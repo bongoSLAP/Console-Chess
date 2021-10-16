@@ -221,7 +221,6 @@ std::vector<std::vector<BoardItem>> assignStartPositions(std::vector<std::vector
 
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
-            //board[i][j].position = xAxisLabels[i] + yAxisLabels[j];
             board[i][j].position = xAxisLabels[j] + yAxisLabels[i];
         }
     }
@@ -233,15 +232,12 @@ std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board,
     std::pair<int, int> indices;
     indices.first = -1;
     indices.second = -1;
-    out("0, 2: position.substr(0, 2): " + position.substr(0, 2) + "\n");
 
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
             if (board[i][j].position == position.substr(0, 2)) {
                 indices.first = i;
                 indices.second = j;
-                out("name of found: " + board[i][j].name + "\n");
-                out("coords: " + std::to_string(i) + " " + std::to_string(j) + "\n");
 
                 return indices;
             }
@@ -256,34 +252,11 @@ std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> boa
     std::pair<int, int> indexTo = findIndexInVector(board, positionTo);
     BoardItem temp = board[indexTo.first][indexTo.second];
     
-    //out(board[indexFrom.first][indexFrom.second].name + "\n");
-    //board[indexTo.first][indexTo.second] = board[indexFrom.first][indexFrom.second];
-    //out(board[indexTo.first][indexTo.second].name + "\n");
+    board[indexTo.first][indexTo.second] = board[indexFrom.first][indexFrom.second];
+    board[indexTo.first][indexTo.second].position = positionTo;
 
-    //board[indexTo.first][indexTo.second].position = positionTo;
-
-    //board[indexFrom.first][indexFrom.second] = temp;
-    //board[indexFrom.first][indexFrom.second].position = positionFrom;
-
-    for (int i = 0; i < board.size(); i++) {
-        out(std::to_string(i) + ": ");
-        for (int j = 0; j < board[i].size(); j++) {
-            out(board[i][j].name + " ");
-        }
-
-        out("\n");
-    }
-
-    out("\n");
-
-    for (int i = 0; i < board.size(); i++) {
-        out(std::to_string(i) + ": ");
-        for (int j = 0; j < board[i].size(); j++) {
-            out(board[i][j].position + " ");
-        }
-
-        out("\n");
-    }
+    board[indexFrom.first][indexFrom.second] = temp;
+    board[indexFrom.first][indexFrom.second].position = positionFrom;
 
     return board;
 }
