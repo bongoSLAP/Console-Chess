@@ -272,7 +272,6 @@ bool validateLength(std::string input) {
         return true;
     } 
 
-    out("\nThe length of input is invalid");
     return false;
 }
 
@@ -330,22 +329,25 @@ int main()
     board = assignStartPositions(board);
     drawBoard(board);
 
-    //while(true) {
-        //std::string move = input("\nMake your move: ");
-
-        std::string move = "2d5g";
+    while(true) {
+        std::string move = input("\nMake your move: ");
 
         if (validateLength(move) && validateChars(move)) {
-            out("\nvalid\n");
-            //std::pair<int, int> indices = findIndexInVector(board, move);
+            std::pair<int, int> indices = findIndexInVector(board, move);
 
-            //std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(2, 4));
+            std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(2, 2));
             //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+
+            board = swap(board, move.substr(0, 2), move.substr(2, 4));
+            system("clear");
+            drawBoard(board);
         }
         else {
+            system("clear");
+            drawBoard(board);
             out("\ninput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\ne.g: d2g5\n");
         }
-    //}
+    }
 
 
 
