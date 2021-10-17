@@ -15,4 +15,12 @@ class Bishop: public BoardItem
 
             this -> icon = "♝";
         }
+
+        bool validateVector(std::pair<int, int> vector) {
+            if (std::abs(vector.first) == std::abs(vector.second)) {
+                return true;
+            }
+
+            return false;
+        }
 };

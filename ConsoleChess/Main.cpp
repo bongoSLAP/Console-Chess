@@ -353,17 +353,17 @@ int main()
     drawBoard(board);
 
     while(true) {
-        std::string move = input("\nMake your move: ");
-        move = "G5H6";
-        move = lower(move);
-        out("\nlowered:" + move + "\n");
+        std::string move = lower(input("\nMake your move: "));
 
         if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
             std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
 
             std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(2, 2));
             out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-            //use column vector passed to a method in piece to validate whether this vector is congruent with moveset of piece
+
+            if (board[indices.first][indices.second].name == "BSHP") {
+                board[indices.first][indices.second].validateVector(vector);
+            }
             
             board = swap(board, move.substr(0, 2), move.substr(2, 4));
             //system("clear");
@@ -371,7 +371,7 @@ int main()
             
         }
         else {
-            //system("clear");
+            system("clear");
             drawBoard(board);
             out("\nInput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nThe 2 coordinates must be different.\ne.g: d2g5\n");
         }
