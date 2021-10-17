@@ -281,10 +281,10 @@ bool validateChars(std::string input) {
         std::sregex_iterator())
     );
 
-    std::regex letterExpression("[^a-h]");
+    std::regex lettersExpression("[^a-h]");
 
     std::ptrdiff_t lettersOccurences(std::distance(
-        std::sregex_iterator(input.begin(), input.end(), letterExpression),
+        std::sregex_iterator(input.begin(), input.end(), lettersExpression),
         std::sregex_iterator())
     );
     
@@ -306,7 +306,7 @@ bool validateChars(std::string input) {
     std::string inputFirst = input.substr(0, 1);
     std::string inputThird = input.substr(2, 1);
 
-    if (std::regex_search(inputFirst, matchLetters, letterExpression) || std::regex_search(inputThird, matchLetters, letterExpression)) {
+    if (std::regex_search(inputFirst, matchLetters, lettersExpression) || std::regex_search(inputThird, matchLetters, lettersExpression)) {
         return false;
     }
     
@@ -327,6 +327,24 @@ std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
+std::string lower(std::string toBeLowered) {
+    std::string lowerString = "";
+    std::smatch matchLetters;
+    std::regex lettersExpression("[^A-H]");
+    
+    for (int i = 0; i < toBeLowered.size(); i++) {
+        if (std::regex_search(toBeLowered, matchLetters, lettersExpression)) {
+            char lowered = tolower(toBeLowered[i]);
+            lowerString += lowered;
+        }
+        else {
+            lowerString += toBeLowered[i];
+        }
+    }
+
+    return lowerString;    
+}
+
 int main()
 {
     system("clear");
@@ -336,6 +354,9 @@ int main()
 
     while(true) {
         std::string move = input("\nMake your move: ");
+        move = "G5H6";
+        move = lower(move);
+        out("\nlowered:" + move + "\n");
 
         if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
             std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
@@ -345,14 +366,14 @@ int main()
             //use column vector passed to a method in piece to validate whether this vector is congruent with moveset of piece
             
             board = swap(board, move.substr(0, 2), move.substr(2, 4));
-            system("clear");
+            //system("clear");
             drawBoard(board);
             
         }
         else {
-            system("clear");
+            //system("clear");
             drawBoard(board);
-            out("\ninput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nthe 2 coordinates must be different.\ne.g: d2g5\n");
+            out("\nInput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nThe 2 coordinates must be different.\ne.g: d2g5\n");
         }
     }
 }
