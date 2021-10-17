@@ -113,8 +113,8 @@ void drawBoard(std::vector<std::vector<BoardItem>> board) {
     itemInRowCount = 0;
 }
 
-std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> generateMajorPieceRow(bool isDark) {
-    std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> majorPieceRow;
+std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
+    std::vector<BoardItem> majorPieceRow;
 
     Rook leftRook;
     leftRook.isDark = isDark;
@@ -167,8 +167,8 @@ std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Emp
     return majorPieceRow;
 }
 
-std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> generatePawnRow(bool isDark) {
-    std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> pawnRow;
+std::vector<BoardItem> generatePawnRow(bool isDark) {
+    std::vector<BoardItem> pawnRow;
 
     for (int i = 0; i < squaresOnAxes; i++) {
         Pawn pawn;
@@ -181,8 +181,8 @@ std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Emp
     return pawnRow;
 }
 
-std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> generateEmptyRow() {
-    std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> emptyRow;
+std::vector<BoardItem> generateEmptyRow() {
+    std::vector<BoardItem> emptyRow;
 
     for (int i = 0; i < squaresOnAxes; i++) {
         Empty empty;
@@ -200,8 +200,8 @@ std::string boolToString(bool b) {
 
 
 
-std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> initialiseBoardStructure() {
-    std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> board;
+std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
+    std::vector<std::vector<BoardItem>> board;
     int emptyRowAmount = 4;
 
     board.push_back(generateMajorPieceRow(true));
@@ -350,11 +350,10 @@ std::string lower(std::string toBeLowered) {
 int main()
 {
     system("clear");
-    std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> board = initialiseBoardStructure();
+    std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
 
     
     board = assignStartPositions(board);
-    /*
     drawBoard(board);
 
     while(true) {
@@ -371,7 +370,7 @@ int main()
             }
             
             board = swap(board, move.substr(0, 2), move.substr(2, 4));
-            //system("clear");
+            system("clear");
             drawBoard(board);
             
         }
@@ -381,6 +380,5 @@ int main()
             out("\nInput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nThe 2 coordinates must be different.\ne.g: d2g5\n");
         }
     }
-    */
 }
 
