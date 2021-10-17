@@ -2,8 +2,6 @@
 #include <string> 
 #include <vector>
 #include <variant>
-#include <chrono>
-#include <thread>
 #include <regex>
 
 #include "Headers/BoardItem.h"
@@ -238,7 +236,7 @@ std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board,
 
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
-            if (board[i][j].position == position.substr(0, 2)) {
+            if (board[i][j].position == position) {
                 indices.first = i;
                 indices.second = j;
 
@@ -250,25 +248,18 @@ std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board,
     return indices;
 }
 
-std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> board, std::string positionFrom, std::string positionTo) {
-    std::pair<int, int> indexFrom = findIndexInVector(board, positionFrom);
-    std::pair<int, int> indexTo = findIndexInVector(board, positionTo);
-    BoardItem temp = board[indexTo.first][indexTo.second];
-    
-    board[indexTo.first][indexTo.second] = board[indexFrom.first][indexFrom.second];
-    board[indexTo.first][indexTo.second].position = positionTo;
-
-    board[indexFrom.first][indexFrom.second] = temp;
-    board[indexFrom.first][indexFrom.second].position = positionFrom;
-
-    return board;
-}
-
-
 bool validateLength(std::string input) {
     int acceptedLength = 4; // 2 chars each position, 1 char for whitespace
 
     if (input.size() == acceptedLength) {
+        return true;
+    } 
+
+    return false;
+}
+
+bool validateNoMove(std::string input) {
+    if (input.substr(0, 2) != input.substr(2, 2)) {
         return true;
     } 
 
@@ -322,6 +313,20 @@ bool validateChars(std::string input) {
     return true;
 }
 
+std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> board, std::string positionFrom, std::string positionTo) {
+    std::pair<int, int> indexFrom = findIndexInVector(board, positionFrom);
+    std::pair<int, int> indexTo = findIndexInVector(board, positionTo);
+    BoardItem temp = board[indexTo.first][indexTo.second];
+    
+    board[indexTo.first][indexTo.second] = board[indexFrom.first][indexFrom.second];
+    board[indexTo.first][indexTo.second].position = positionTo;
+
+    board[indexFrom.first][indexFrom.second] = temp;
+    board[indexFrom.first][indexFrom.second].position = positionFrom;
+
+    return board;
+}
+
 int main()
 {
     system("clear");
@@ -332,41 +337,23 @@ int main()
     while(true) {
         std::string move = input("\nMake your move: ");
 
-        if (validateLength(move) && validateChars(move)) {
-            std::pair<int, int> indices = findIndexInVector(board, move);
+        if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
+            std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
 
             std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(2, 2));
-            //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-
+            out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+            //use column vector passed to a method in piece to validate whether this vector is congruent with moveset of piece
+            
             board = swap(board, move.substr(0, 2), move.substr(2, 4));
             system("clear");
             drawBoard(board);
+            
         }
         else {
             system("clear");
             drawBoard(board);
-            out("\ninput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\ne.g: d2g5\n");
+            out("\ninput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nthe 2 coordinates must be different.\ne.g: d2g5\n");
         }
     }
-
-
-
-    /*
-    board = swap(board, "d1", "a6");
-    std::chrono::milliseconds timespan(3000); // or whatever
-    std::this_thread::sleep_for(timespan);
-
-    system("clear");
-    drawBoard(board);
-    */
-    /*
-    for (int i = 0; i < board.size(); i++) {
-        for (int j = 0; j < board[i].size(); j++) {
-            out(board[i][j].name + " ");
-        }
-
-        out("\n");
-    }
-    */
 }
 
