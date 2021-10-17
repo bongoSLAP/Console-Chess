@@ -301,6 +301,24 @@ bool validateChars(std::string input) {
     if (digitOccurences > 2 || lettersOccurences > 2) {
         return false;
     }
+
+    std::smatch matchDigits;
+
+    std::string inputSecond = input.substr(1, 1);
+    std::string inputFourth = input.substr(3, 1);
+
+    if (std::regex_search(inputSecond, matchDigits, digitsExpression) || std::regex_search(inputFourth, matchDigits, digitsExpression)) {
+        return false;
+    }
+
+    std::smatch matchLetters;
+    
+    std::string inputFirst = input.substr(0, 1);
+    std::string inputThird = input.substr(2, 1);
+
+    if (std::regex_search(inputFirst, matchLetters, letterExpression) || std::regex_search(inputThird, matchLetters, letterExpression)) {
+        return false;
+    }
     
     return true;
 }
@@ -315,7 +333,7 @@ int main()
     //while(true) {
         //std::string move = input("\nMake your move: ");
 
-        std::string move = "22g5";
+        std::string move = "2d5g";
 
         if (validateLength(move) && validateChars(move)) {
             out("\nvalid\n");
