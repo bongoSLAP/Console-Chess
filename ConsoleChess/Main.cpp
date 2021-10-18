@@ -198,8 +198,6 @@ std::string boolToString(bool b) {
   return b ? "true" : "false";
 }
 
-
-
 std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> initialiseBoardStructure() {
     std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> board;
     int emptyRowAmount = 4;
@@ -217,14 +215,13 @@ std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Roo
     return board;
 } 
 
-std::vector<std::vector<BoardItem>> assignStartPositions(std::vector<std::vector<BoardItem>> board) {
+std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> assignStartPositions(std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> board) {
     std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
     std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
 
-
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
-            board[i][j].position = xAxisLabels[j] + yAxisLabels[i];
+            //std::get<BoardItem>(board[i][j]).position = xAxisLabels[j] + yAxisLabels[i];
         }
     }
 
@@ -352,8 +349,15 @@ int main()
     system("clear");
     std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> board = initialiseBoardStructure();
 
-    
-    board = assignStartPositions(board);
+    Rook rook;
+    board[0][0] = rook;
+    rook.setName();
+    std::get<Rook>(board[0][0]); //no bad variant access exception as [0][0] contains rook
+    std::get<Queen>(board[0][0]); //bad variant access exception as [0][0] does not contain queen
+
+    //^This means that when accessing items on board I need some way of switching out the types to avoid exception, as the types passed to std::get are strictly declarative
+
+    //board = assignStartPositions(board);
     /*
     drawBoard(board);
 
