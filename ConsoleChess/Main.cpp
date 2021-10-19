@@ -53,32 +53,23 @@ void printXGridline() {
     out("\n");
 }
 
-auto cast(std::any any) {
-    if (strcmp(any.type().name(), "9BoardItem") == 0) {
-        return std::any_cast<BoardItem>(any);
-    }
-    else if (strcmp(any.type().name(), "4King") == 0) {
-        return std::any_cast<King>(any);
-    }
-    else if (strcmp(any.type().name(), "5Queen") == 0) {
-        return std::any_cast<Queen>(any);
-    }
-    else if (strcmp(any.type().name(), "6Knight") == 0) {
-        return std::any_cast<Knight>(any);
-    }
-    else if (strcmp(any.type().name(), "6Bishop") == 0) {
-        return std::any_cast<Bishop>(any);
-    }
-    else if (strcmp(any.type().name(), "4Rook") == 0) {
-        return std::any_cast<Rook>(any);
-    }
-    else if (strcmp(any.type().name(), "4Pawn") == 0) {
-        return std::any_cast<Pawn>(any);
-    }
-    else if (strcmp(any.type().name(), "5Empty") == 0) {
-        return std::any_cast<Empty>(any);
-    }
-}
+/*
+if (strcmp(.type().name(), "4King") == 0) 
+    std::any_cast<King>();
+else if (strcmp(.type().name(), "5Queen") == 0) 
+    std::any_cast<Queen>();
+else if (strcmp(.type().name(), "6Knight") == 0) 
+    std::any_cast<Knight>();
+else if (strcmp(.type().name(), "6Bishop") == 0) 
+    std::any_cast<Bishop>();
+else if (strcmp(.type().name(), "4Rook") == 0) 
+    std::any_cast<Rook>();
+else if (strcmp(.type().name(), "4Pawn") == 0) 
+    std::any_cast<Pawn>();
+else if (strcmp(.type().name(), "5Empty") == 0) 
+    std::any_cast<Empty>();
+*/
+    
 
 void printYGridline(std::vector<std::vector<std::any>> board) {
     std::string spacing;
@@ -92,8 +83,22 @@ void printYGridline(std::vector<std::vector<std::any>> board) {
 
             if (i == midPoint) {
                 spacing = generateIconSpacing(gridSpacing / 2);
-                //std::any_cast<King>(board[rowCount][itemInRowCount]);
-                //out(spacing + board[rowCount][itemInRowCount].type().icon);
+                out(spacing + std::any_cast<King>(board[rowCount][itemInRowCount]).icon)
+
+                if (strcmp(board[rowCount][itemInRowCount].type().name(), "4King") == 0) 
+                    out(spacing + std::any_cast<King>(board[rowCount][itemInRowCount]).icon);
+                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "5Queen") == 0) 
+                    out(spacing + std::any_cast<Queen>(board[rowCount][itemInRowCount]).icon);
+                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "6Knight") == 0)
+                    out(spacing + std::any_cast<Knight>(board[rowCount][itemInRowCount]).icon);
+                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "6Bishop") == 0) 
+                    out(spacing + std::any_cast<Bishop>(board[rowCount][itemInRowCount]).icon);
+                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "4Rook") == 0) 
+                    out(spacing + std::any_cast<Rook>(board[rowCount][itemInRowCount]).icon);
+                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "4Pawn") == 0) 
+                    out(spacing + std::any_cast<Pawn>(board[rowCount][itemInRowCount]).icon);
+                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "5Empty") == 0) 
+                    out(spacing + std::any_cast<Empty>(board[rowCount][itemInRowCount]).icon);
 
                 itemInRowCount ++;
 
@@ -261,7 +266,7 @@ std::vector<std::vector<std::any>> assignStartPositions(std::vector<std::vector<
     return board;
 }
 
-std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board, std::string position) {
+std::pair<int, int> findIndexInVector(std::vector<std::vector<std::any>> board, std::string position) {
     std::pair<int, int> indices;
     indices.first = -1;
     indices.second = -1;
@@ -383,21 +388,19 @@ int main()
     std::vector<std::vector<std::any>> board = initialiseBoardStructure();
     board = assignStartPositions(board);
 
-    //out(board[0][0].type().name());
-    //out(std::any_cast<Rook>(board[0][0]).name);
-    Rook rook = cast(board[0][0]);
-    //drawBoard(board);
+    drawBoard(board);
 
-/*
+
     while(true) {
         std::string move = lower(input("\nMake your move: "));
 
         if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
             std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
 
-            std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(2, 2));
+            std::pair<int, int> vector = std::any_cast<BoardItem>(board[indices.first][indices.second]).createColumnVector(move.substr(2, 2));
             out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
 
+            /*
             if (board[indices.first][indices.second].name == "BSHP") {
                 //board[indices.first][indices.second].validateVector(vector);
             }
@@ -405,7 +408,8 @@ int main()
             board = swap(board, move.substr(0, 2), move.substr(2, 4));
             //system("clear");
             drawBoard(board);
-            
+            */
+            /*
         }
         else {
             system("clear");
