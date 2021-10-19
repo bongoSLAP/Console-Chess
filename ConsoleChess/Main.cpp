@@ -3,6 +3,7 @@
 #include <vector>
 #include <variant>
 #include <regex>
+#include <any>
 
 #include "Headers/BoardItem.h"
 #include "Headers/King.h"
@@ -52,7 +53,34 @@ void printXGridline() {
     out("\n");
 }
 
-void printYGridline(std::vector<std::vector<BoardItem>> board) {
+auto cast(std::any any) {
+    if (strcmp(any.type().name(), "9BoardItem") == 0) {
+        return std::any_cast<BoardItem>(any);
+    }
+    else if (strcmp(any.type().name(), "4King") == 0) {
+        return std::any_cast<King>(any);
+    }
+    else if (strcmp(any.type().name(), "5Queen") == 0) {
+        return std::any_cast<Queen>(any);
+    }
+    else if (strcmp(any.type().name(), "6Knight") == 0) {
+        return std::any_cast<Knight>(any);
+    }
+    else if (strcmp(any.type().name(), "6Bishop") == 0) {
+        return std::any_cast<Bishop>(any);
+    }
+    else if (strcmp(any.type().name(), "4Rook") == 0) {
+        return std::any_cast<Rook>(any);
+    }
+    else if (strcmp(any.type().name(), "4Pawn") == 0) {
+        return std::any_cast<Pawn>(any);
+    }
+    else if (strcmp(any.type().name(), "5Empty") == 0) {
+        return std::any_cast<Empty>(any);
+    }
+}
+
+void printYGridline(std::vector<std::vector<std::any>> board) {
     std::string spacing;
     int midPoint = 1;
 
@@ -64,7 +92,8 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
 
             if (i == midPoint) {
                 spacing = generateIconSpacing(gridSpacing / 2);
-                out(spacing + board[rowCount][itemInRowCount].icon);
+                //std::any_cast<King>(board[rowCount][itemInRowCount]);
+                //out(spacing + board[rowCount][itemInRowCount].type().icon);
 
                 itemInRowCount ++;
 
@@ -100,7 +129,7 @@ void printXLabels() {
     out("\n");
 }
 
-void drawBoard(std::vector<std::vector<BoardItem>> board) {
+void drawBoard(std::vector<std::vector<std::any>> board) {
     for (int i = 0; i < squaresOnAxes; i++) {
         printXGridline();
         printYGridline(board);
@@ -113,8 +142,8 @@ void drawBoard(std::vector<std::vector<BoardItem>> board) {
     itemInRowCount = 0;
 }
 
-std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> generateMajorPieceRow(bool isDark) {
-    std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> majorPieceRow;
+std::vector<std::any> generateMajorPieceRow(bool isDark) {
+    std::vector<std::any> majorPieceRow;
 
     Rook leftRook;
     leftRook.isDark = isDark;
@@ -167,8 +196,8 @@ std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Emp
     return majorPieceRow;
 }
 
-std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> generatePawnRow(bool isDark) {
-    std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> pawnRow;
+std::vector<std::any> generatePawnRow(bool isDark) {
+    std::vector<std::any> pawnRow;
 
     for (int i = 0; i < squaresOnAxes; i++) {
         Pawn pawn;
@@ -181,8 +210,8 @@ std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Emp
     return pawnRow;
 }
 
-std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> generateEmptyRow() {
-    std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>> emptyRow;
+std::vector<std::any> generateEmptyRow() {
+    std::vector<std::any> emptyRow;
 
     for (int i = 0; i < squaresOnAxes; i++) {
         Empty empty;
@@ -198,11 +227,14 @@ std::string boolToString(bool b) {
   return b ? "true" : "false";
 }
 
-std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> initialiseBoardStructure() {
-    std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> board;
+std::vector<std::vector<std::any>> initialiseBoardStructure() {
+    std::vector<std::vector<std::any>> board;
     int emptyRowAmount = 4;
 
     board.push_back(generateMajorPieceRow(true));
+    //std::any rook = board[0][4];
+    //out(rook.type().name());
+
     board.push_back(generatePawnRow(true));
 
     for (int i = 0; i < emptyRowAmount; i++) {
@@ -213,14 +245,15 @@ std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Roo
     board.push_back(generateMajorPieceRow(false));
 
     return board;
-} 
+}
 
-std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> assignStartPositions(std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> board) {
+std::vector<std::vector<std::any>> assignStartPositions(std::vector<std::vector<std::any>> board) {
     std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
     std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
 
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
+            //board[i][j].position = xAxisLabels[j] + yAxisLabels[i];
             //std::get<BoardItem>(board[i][j]).position = xAxisLabels[j] + yAxisLabels[i];
         }
     }
@@ -347,20 +380,15 @@ std::string lower(std::string toBeLowered) {
 int main()
 {
     system("clear");
-    std::vector<std::vector<std::variant<BoardItem, King, Queen, Knight, Bishop, Rook, Pawn, Empty>>> board = initialiseBoardStructure();
+    std::vector<std::vector<std::any>> board = initialiseBoardStructure();
+    board = assignStartPositions(board);
 
-    Rook rook;
-    board[0][0] = rook;
-    rook.setName();
-    std::get<Rook>(board[0][0]); //no bad variant access exception as [0][0] contains rook
-    std::get<Queen>(board[0][0]); //bad variant access exception as [0][0] does not contain queen
+    //out(board[0][0].type().name());
+    //out(std::any_cast<Rook>(board[0][0]).name);
+    Rook rook = cast(board[0][0]);
+    //drawBoard(board);
 
-    //^This means that when accessing items on board I need some way of switching out the types to avoid exception, as the types passed to std::get are strictly declarative
-
-    //board = assignStartPositions(board);
-    /*
-    drawBoard(board);
-
+/*
     while(true) {
         std::string move = lower(input("\nMake your move: "));
 
