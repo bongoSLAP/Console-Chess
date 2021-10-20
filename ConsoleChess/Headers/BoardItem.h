@@ -9,6 +9,67 @@ class BoardItem
         std::string position;
         bool isDark;
 
+        void setName(std::string name) {
+            this -> name = name;
+        }
+
+        void setIcon() {
+            if (this -> name == "KING") {
+                if (this -> isDark) {
+                    this -> icon = "♔";
+                }
+                else {
+                    this -> icon = "♚";
+                }
+            }
+            else if (this -> name == "QUEN") {
+                if (this -> isDark) {
+                    this -> icon = "♕";
+                }
+                else {
+                    this -> icon = "♛";
+                }
+            }
+            else if (this -> name == "KNHT") {
+                if (this -> isDark) { 
+                    this -> icon = "♘";
+                }
+                else {            
+                    this -> icon = "♞";
+                }
+            }
+            else if (this -> name == "BSHP") {
+                if (this -> isDark) { 
+                    this -> icon = "♗";
+                }
+                else {
+                    this -> icon = "♝";
+                }
+            }
+            else if (this -> name == "ROOK") {
+                if (this -> isDark) {
+                    this -> icon = "♖";
+                }
+                else {
+                    this -> icon = "♜";
+                }
+            }
+            else if (this -> name == "PAWN") {
+                if (this -> isDark) {
+                    this -> icon = "♙";
+                }
+                else {
+                    this -> icon = "♟";
+                }
+            }
+            else if (this -> name == "EMTY") {
+                this -> icon = " ";
+            }
+            else {
+                std::cout << "ERROR: name: " << this -> name << " is unrecognised.";
+            }
+        }
+
         int translateXToInt(std::string xAxisLetter) {
             std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
 
@@ -40,4 +101,13 @@ class BoardItem
             
             return columnVector;
         };      
+
+        /*
+        bool validateVector(std::pair<int, int> vector) {
+            if (std::abs(vector.first) == std::abs(vector.second)) {
+                return true;
+            }
+
+            return false;
+        }*/
 };

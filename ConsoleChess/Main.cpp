@@ -5,13 +5,6 @@
 #include <regex>
 
 #include "Headers/BoardItem.h"
-#include "Headers/King.h"
-#include "Headers/Queen.h"
-#include "Headers/Bishop.h"
-#include "Headers/Knight.h"
-#include "Headers/Rook.h"
-#include "Headers/Pawn.h"
-#include "Headers/Empty.h"
 
 const int squaresOnAxes = 8;
 const int gridSpacing = 6;
@@ -115,54 +108,15 @@ void drawBoard(std::vector<std::vector<BoardItem>> board) {
 
 std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
     std::vector<BoardItem> majorPieceRow;
+    std::vector<std::string> names = {"ROOK", "KNHT", "BSHP", "QUEN", "KING", "BSHP", "KNHT", "ROOK"};
 
-    Rook leftRook;
-    leftRook.isDark = isDark;
-    leftRook.setName();
-    leftRook.setIcon();
-    majorPieceRow.push_back(leftRook);
-
-    Knight leftKnight;
-    leftKnight.isDark = isDark;
-    leftKnight.setName();
-    leftKnight.setIcon();
-    majorPieceRow.push_back(leftKnight);
-
-    Bishop leftBishop;
-    leftBishop.isDark = isDark;
-    leftBishop.setName();
-    leftBishop.setIcon();
-    majorPieceRow.push_back(leftBishop);
-
-    Queen queen;
-    queen.isDark = isDark;
-    queen.setName();
-    queen.setIcon();
-    majorPieceRow.push_back(queen);
-    
-    King king;
-    king.isDark = isDark;
-    king.setName();
-    king.setIcon();
-    majorPieceRow.push_back(king);
-
-    Bishop rightBishop;
-    rightBishop.isDark = isDark;
-    rightBishop.setName();
-    rightBishop.setIcon();
-    majorPieceRow.push_back(rightBishop);
-
-    Knight rightKnight;
-    rightKnight.isDark = isDark;
-    rightKnight.setName();
-    rightKnight.setIcon();
-    majorPieceRow.push_back(rightKnight);
-
-    Rook rightRook;
-    rightRook.isDark = isDark;
-    rightRook.setName();
-    rightRook.setIcon();
-    majorPieceRow.push_back(rightRook);
+    for (int i = 0; i < names.size(); i++) {
+        BoardItem boardItem;
+        boardItem.isDark = isDark;
+        boardItem.setName(names[i]);
+        boardItem.setIcon();
+        majorPieceRow.push_back(boardItem);
+    }
 
     return majorPieceRow;
 }
@@ -171,11 +125,11 @@ std::vector<BoardItem> generatePawnRow(bool isDark) {
     std::vector<BoardItem> pawnRow;
 
     for (int i = 0; i < squaresOnAxes; i++) {
-        Pawn pawn;
-        pawn.isDark = isDark;
-        pawn.setName();
-        pawn.setIcon();
-        pawnRow.push_back(pawn);
+        BoardItem boardItem;
+        boardItem.isDark = isDark;
+        boardItem.setName("PAWN");
+        boardItem.setIcon();
+        pawnRow.push_back(boardItem);
     }
 
     return pawnRow;
@@ -185,10 +139,10 @@ std::vector<BoardItem> generateEmptyRow() {
     std::vector<BoardItem> emptyRow;
 
     for (int i = 0; i < squaresOnAxes; i++) {
-        Empty empty;
-        empty.setName();
-        empty.setIcon();
-        emptyRow.push_back(empty);
+        BoardItem boardItem;
+        boardItem.setName("EMTY");
+        boardItem.setIcon();
+        emptyRow.push_back(boardItem);
     }
 
     return emptyRow;
@@ -197,8 +151,6 @@ std::vector<BoardItem> generateEmptyRow() {
 std::string boolToString(bool b) {
   return b ? "true" : "false";
 }
-
-
 
 std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     std::vector<std::vector<BoardItem>> board;
@@ -351,7 +303,6 @@ int main()
 {
     system("clear");
     std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
-
     
     board = assignStartPositions(board);
     drawBoard(board);
