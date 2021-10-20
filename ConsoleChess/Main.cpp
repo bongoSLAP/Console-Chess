@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string> 
 #include <vector>
-#include <variant>
 #include <regex>
 #include <any>
 
@@ -69,6 +68,23 @@ else if (strcmp(.type().name(), "4Pawn") == 0)
 else if (strcmp(.type().name(), "5Empty") == 0) 
     std::any_cast<Empty>();
 */
+
+void castCall(std::any any) {
+    if (strcmp(any.type().name(), "4King") == 0) 
+        std::any_cast<King>(any).member
+    else if (strcmp(any.type().name(), "5Queen") == 0) 
+        std::any_cast<Queen>(any)
+    else if (strcmp(any.type().name(), "6Knight") == 0)
+        std::any_cast<Knight>(any)
+    else if (strcmp(any.type().name(), "6Bishop") == 0) 
+        std::any_cast<Bishop>(any)
+    else if (strcmp(any.type().name(), "4Rook") == 0) 
+        std::any_cast<Rook>(any)
+    else if (strcmp(any.type().name(), "4Pawn") == 0) 
+        std::any_cast<Pawn>(any)
+    else if (strcmp(any.type().name(), "5Empty") == 0) 
+        std::any_cast<Empty>(any)
+}
     
 
 void printYGridline(std::vector<std::vector<std::any>> board) {
@@ -83,22 +99,7 @@ void printYGridline(std::vector<std::vector<std::any>> board) {
 
             if (i == midPoint) {
                 spacing = generateIconSpacing(gridSpacing / 2);
-                out(spacing + std::any_cast<King>(board[rowCount][itemInRowCount]).icon)
-
-                if (strcmp(board[rowCount][itemInRowCount].type().name(), "4King") == 0) 
-                    out(spacing + std::any_cast<King>(board[rowCount][itemInRowCount]).icon);
-                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "5Queen") == 0) 
-                    out(spacing + std::any_cast<Queen>(board[rowCount][itemInRowCount]).icon);
-                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "6Knight") == 0)
-                    out(spacing + std::any_cast<Knight>(board[rowCount][itemInRowCount]).icon);
-                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "6Bishop") == 0) 
-                    out(spacing + std::any_cast<Bishop>(board[rowCount][itemInRowCount]).icon);
-                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "4Rook") == 0) 
-                    out(spacing + std::any_cast<Rook>(board[rowCount][itemInRowCount]).icon);
-                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "4Pawn") == 0) 
-                    out(spacing + std::any_cast<Pawn>(board[rowCount][itemInRowCount]).icon);
-                else if (strcmp(board[rowCount][itemInRowCount].type().name(), "5Empty") == 0) 
-                    out(spacing + std::any_cast<Empty>(board[rowCount][itemInRowCount]).icon);
+                out(spacing + std::any_cast<King>(board[rowCount][itemInRowCount]).icon);
 
                 itemInRowCount ++;
 
