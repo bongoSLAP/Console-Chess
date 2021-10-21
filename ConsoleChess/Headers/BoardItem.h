@@ -102,12 +102,44 @@ class BoardItem
             return columnVector;
         };      
 
-        /*
-        bool validateVector(std::pair<int, int> vector) {
+        bool validateDiagonal(std::pair<int, int> vector) {
             if (std::abs(vector.first) == std::abs(vector.second)) {
                 return true;
             }
 
             return false;
-        }*/
+        };
+
+        bool validateStraight(std::pair<int, int> vector) {
+            if ((vector.first != 0 && vector.second == 0) || (vector.first == 0 && vector.second != 0)) {
+                return true;
+            }
+
+            return false;
+        };
+
+        bool validateOneAround(std::pair<int, int> vector) {
+            if (((vector.first != 0 && std::abs(vector.second) == 1) || (std::abs(vector.first) == 1 && vector.second != 0)) || (std::abs(vector.first) == 1 && std::abs(vector.second) == 1)) {
+                return true;
+            }
+            
+            return false;
+        };
+
+        bool validateJumps(std::pair<int, int> vector) {
+            if ((vector.first == 1) && (vector.second == 2 || vector.second == 1)) {
+                return true;
+            }
+            else if ((vector.first == 2) && (vector.second == 1 || vector.second == -1)) {
+                return true;
+            }
+            else if (vector.first == -1 && vector.second == -2) {
+                return true;
+            }
+            else if ((vector.first == -2) && (vector.second == -1 || vector.second == 1)) {
+                return true;
+            }
+            
+            return false;
+        };
 };
