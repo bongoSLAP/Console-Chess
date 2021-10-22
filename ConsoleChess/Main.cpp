@@ -299,6 +299,11 @@ std::string lower(std::string toBeLowered) {
     return lowerString;    
 }
 
+void clearAndDraw(std::vector<std::vector<BoardItem>> board) {
+    system("clear");
+    drawBoard(board);
+}
+
 int main()
 {
     system("clear");
@@ -316,8 +321,7 @@ int main()
             BoardItem curr = board[indices.first][indices.second];
 
             if (curr.name == "EMTY") {
-                system("clear");
-                drawBoard(board);
+                clearAndDraw(board);
                 out("There is no piece on position '" + curr.position + "' to move to position '" + move.substr(2, 2) + "'");
             }
             else {
@@ -327,13 +331,8 @@ int main()
                     isVectorValid = curr.validateOneAround(vector);
                 }
                 else if (curr.name == "QUEN") {
-                    out("\none around" + boolToString(curr.validateOneAround(vector)));
-                    out("\ndiagonal" + boolToString(curr.validateDiagonal(vector)));
-                    out("\nstraight" + boolToString(curr.validateStraight(vector)));
-
-                    if (curr.validateOneAround(vector) || curr.validateDiagonal(vector) || curr.validateStraight(vector)) {
+                    if (curr.validateOneAround(vector) || curr.validateDiagonal(vector) || curr.validateStraight(vector))
                         isVectorValid = true;
-                    }
                 }
                 else if (curr.name == "KNHT") {
                     isVectorValid = curr.validateJumps(vector);
@@ -351,21 +350,19 @@ int main()
                 if (isVectorValid) {
                     board = swap(board, move.substr(0, 2), move.substr(2, 4));
 
-                    //system("clear");
-                    drawBoard(board);
-                    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                    clearAndDraw(board);
+                    //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
                 }
                 else {
-                    system("clear");
-                    drawBoard(board);
-                    out("\nThe move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
+                    clearAndDraw(board);
+                    out("The move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
                 }
+                out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
             }
         }
         else {
-            system("clear");
-            drawBoard(board);
-            out("\nInput is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nThe 2 coordinates must be different.\ne.g: d2g5\n");
+            clearAndDraw(board);
+            out("Input is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nThe 2 coordinates must be different.\ne.g: d2g5\n");
         }
     }
 }

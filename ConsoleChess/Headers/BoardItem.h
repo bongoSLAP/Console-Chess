@@ -15,52 +15,40 @@ class BoardItem
 
         void setIcon() {
             if (this -> name == "KING") {
-                if (this -> isDark) {
+                if (this -> isDark) 
                     this -> icon = "♔";
-                }
-                else {
+                else 
                     this -> icon = "♚";
-                }
             }
             else if (this -> name == "QUEN") {
-                if (this -> isDark) {
+                if (this -> isDark) 
                     this -> icon = "♕";
-                }
-                else {
+                else 
                     this -> icon = "♛";
-                }
             }
             else if (this -> name == "KNHT") {
-                if (this -> isDark) { 
-                    this -> icon = "♘";
-                }
-                else {            
-                    this -> icon = "♞";
-                }
+                if (this -> isDark) 
+                    this -> icon = "♘";               
+                else            
+                    this -> icon = "♞";                
             }
             else if (this -> name == "BSHP") {
-                if (this -> isDark) { 
-                    this -> icon = "♗";
-                }
-                else {
-                    this -> icon = "♝";
-                }
+                if (this -> isDark) 
+                    this -> icon = "♗"; 
+                else 
+                    this -> icon = "♝";            
             }
             else if (this -> name == "ROOK") {
-                if (this -> isDark) {
-                    this -> icon = "♖";
-                }
-                else {
-                    this -> icon = "♜";
-                }
+                if (this -> isDark) 
+                    this -> icon = "♖";          
+                else 
+                    this -> icon = "♜";               
             }
             else if (this -> name == "PAWN") {
-                if (this -> isDark) {
+                if (this -> isDark) 
                     this -> icon = "♙";
-                }
-                else {
+                else 
                     this -> icon = "♟";
-                }
             }
             else if (this -> name == "EMTY") {
                 this -> icon = " ";
@@ -74,9 +62,8 @@ class BoardItem
             std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
 
             for (int i = 0; i < xAxisLabels.size(); i++) {
-                if (xAxisLabels[i] == xAxisLetter) {
+                if (xAxisLabels[i] == xAxisLetter) 
                     return i;
-                }
             }
 
             return -1;
@@ -103,45 +90,41 @@ class BoardItem
         };      
 
         bool validateDiagonal(std::pair<int, int> vector) {
-            if (std::abs(vector.first) == std::abs(vector.second)) {
+            if (std::abs(vector.first) == std::abs(vector.second)) 
                 return true;
-            }
 
             return false;
         };
 
         bool validateStraight(std::pair<int, int> vector) {
-            if ((vector.first != 0 && vector.second == 0) || (vector.first == 0 && vector.second != 0)) {
+            if ((vector.first != 0 && vector.second == 0) || (vector.first == 0 && vector.second != 0))
                 return true;
-            }
 
             return false;
         };
 
         bool validateStep(std::pair<int, int> vector) {
-            if ((vector.first == 0 && vector.second == 1) || (vector.first == 0 && vector.second == 2)) {
+            if ((vector.first == 0 && vector.second == 1) || (vector.first == 0 && vector.second == 2)) 
                 return true;
-            }
             
             return false;
         }
 
         bool validateOneAround(std::pair<int, int> vector) {
-            if (((vector.first == 0 && std::abs(vector.second) == 1) || (std::abs(vector.first) == 1 && vector.second == 0)) || (std::abs(vector.first) == 1 && std::abs(vector.second) == 1)) {
+            if (((vector.first == 0 && std::abs(vector.second) == 1) || (std::abs(vector.first) == 1 && vector.second == 0)) || (std::abs(vector.first) == 1 && std::abs(vector.second) == 1)) 
                 return true;
-            }
             
             return false;
         };
 
         bool validateJumps(std::pair<int, int> vector) {
-            if ((vector.first == 1) && (vector.second == 2 || vector.second == 1)) {
+            if ((vector.first == 1) && (vector.second == 2 || vector.second == -2)) {
                 return true;
             }
             else if ((vector.first == 2) && (vector.second == 1 || vector.second == -1)) {
                 return true;
             }
-            else if (vector.first == -1 && vector.second == -2) {
+            else if ((vector.first == -1) && (vector.second == 2 || vector.second == -2)) {
                 return true;
             }
             else if ((vector.first == -2) && (vector.second == -1 || vector.second == 1)) {
