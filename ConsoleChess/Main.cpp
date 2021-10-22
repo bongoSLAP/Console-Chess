@@ -313,50 +313,52 @@ int main()
 
         if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
             std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
+            BoardItem curr = board[indices.first][indices.second];
 
-            if (board[indices.first][indices.second].name == "EMTY") {
+            if (curr.name == "EMTY") {
                 system("clear");
                 drawBoard(board);
-                out("There is no piece on position '" + board[indices.first][indices.second].position + "' to move to position '" + move.substr(2, 2) + "'");
+                out("There is no piece on position '" + curr.position + "' to move to position '" + move.substr(2, 2) + "'");
             }
             else {
-                std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(2, 2));
+                std::pair<int, int> vector = curr.createColumnVector(move.substr(2, 2));
 
-                if (board[indices.first][indices.second].name == "KING") {
-                    isVectorValid = board[indices.first][indices.second].validateOneAround(vector);
+                if (curr.name == "KING") {
+                    isVectorValid = curr.validateOneAround(vector);
                 }
-                else if (board[indices.first][indices.second].name == "QUEN") {
-                    if (board[indices.first][indices.second].validateOneAround(vector) || board[indices.first][indices.second].validateDiagonal(vector) || board[indices.first][indices.second].validateStraight(vector)) {
+                else if (curr.name == "QUEN") {
+                    out("\none around" + boolToString(curr.validateOneAround(vector)));
+                    out("\ndiagonal" + boolToString(curr.validateDiagonal(vector)));
+                    out("\nstraight" + boolToString(curr.validateStraight(vector)));
+
+                    if (curr.validateOneAround(vector) || curr.validateDiagonal(vector) || curr.validateStraight(vector)) {
                         isVectorValid = true;
                     }
-                    else {
-                        isVectorValid = false;
-                    }
                 }
-                else if (board[indices.first][indices.second].name == "KNHT") {
-                    isVectorValid = board[indices.first][indices.second].validateJumps(vector);
+                else if (curr.name == "KNHT") {
+                    isVectorValid = curr.validateJumps(vector);
                 }
-                else if (board[indices.first][indices.second].name == "BSHP") {
-                    isVectorValid = board[indices.first][indices.second].validateDiagonal(vector);
+                else if (curr.name == "BSHP") {
+                    isVectorValid = curr.validateDiagonal(vector);
                 }
-                else if (board[indices.first][indices.second].name == "ROOK") {
-                    isVectorValid = board[indices.first][indices.second].validateStraight(vector);
+                else if (curr.name == "ROOK") {
+                    isVectorValid = curr.validateStraight(vector);
                 }
-                else if (board[indices.first][indices.second].name == "PAWN") {
-                    isVectorValid = board[indices.first][indices.second].validateStep(vector);
+                else if (curr.name == "PAWN") {
+                    isVectorValid = curr.validateStep(vector);
                 }
                 
                 if (isVectorValid) {
                     board = swap(board, move.substr(0, 2), move.substr(2, 4));
 
-                    system("clear");
+                    //system("clear");
                     drawBoard(board);
                     out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
                 }
                 else {
                     system("clear");
                     drawBoard(board);
-                    out("\nThe move '" + move + "' is not part of the moveset of the board piece '" + board[indices.first][indices.second].icon + " '");
+                    out("\nThe move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
                 }
             }
         }

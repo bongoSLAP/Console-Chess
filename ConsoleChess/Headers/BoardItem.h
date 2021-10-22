@@ -127,7 +127,7 @@ class BoardItem
         }
 
         bool validateOneAround(std::pair<int, int> vector) {
-            if (((vector.first != 0 && std::abs(vector.second) == 1) || (std::abs(vector.first) == 1 && vector.second != 0)) || (std::abs(vector.first) == 1 && std::abs(vector.second) == 1)) {
+            if (((vector.first == 0 && std::abs(vector.second) == 1) || (std::abs(vector.first) == 1 && vector.second == 0)) || (std::abs(vector.first) == 1 && std::abs(vector.second) == 1)) {
                 return true;
             }
             
