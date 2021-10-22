@@ -304,6 +304,17 @@ void clearAndDraw(std::vector<std::vector<BoardItem>> board) {
     drawBoard(board);
 }
 
+bool coinToss() {
+	int random;
+    srand((unsigned)time(0)); //generates random seed
+    random = (rand() % 2) + 1;
+
+    if (random == 1)
+        return true;
+    
+    return false;
+}
+
 int main()
 {
     system("clear");
@@ -311,58 +322,80 @@ int main()
     
     board = assignStartPositions(board);
     drawBoard(board);
+    bool isGameFinished = false;
+    bool isTurnOver = false;
+    bool isDarkTurn = coinToss();
 
-    while(true) {
-        std::string move = lower(input("\nMake your move: "));
-        bool isVectorValid = false;
+    while(!isGameFinished) {
+        isTurnOver = false;
 
-        if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
-            std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
-            BoardItem curr = board[indices.first][indices.second];
+        while(!isTurnOver) {
+            if (isDarkTurn)
+                out("\nDark, it is your turn. ");
+            else
+                out("\nLight, it is your turn. ");
+            
+            std::string move = lower(input("Make your move: "));
+            bool isVectorValid = false;
 
-            if (curr.name == "EMTY") {
-                clearAndDraw(board);
-                out("There is no piece on position '" + curr.position + "' to move to position '" + move.substr(2, 2) + "'");
-            }
-            else {
-                std::pair<int, int> vector = curr.createColumnVector(move.substr(2, 2));
+            if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
+                std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
+                BoardItem curr = board[indices.first][indices.second];
 
-                if (curr.name == "KING") {
-                    isVectorValid = curr.validateOneAround(vector);
-                }
-                else if (curr.name == "QUEN") {
-                    if (curr.validateOneAround(vector) || curr.validateDiagonal(vector) || curr.validateStraight(vector))
-                        isVectorValid = true;
-                }
-                else if (curr.name == "KNHT") {
-                    isVectorValid = curr.validateJumps(vector);
-                }
-                else if (curr.name == "BSHP") {
-                    isVectorValid = curr.validateDiagonal(vector);
-                }
-                else if (curr.name == "ROOK") {
-                    isVectorValid = curr.validateStraight(vector);
-                }
-                else if (curr.name == "PAWN") {
-                    isVectorValid = curr.validateStep(vector);
-                }
-                
-                if (isVectorValid) {
-                    board = swap(board, move.substr(0, 2), move.substr(2, 4));
+                if (curr.isDark == isDarkTurn) {
+                    if (curr.name == "EMTY") {
+                        clearAndDraw(board);
+                        out("There is no piece on position '" + curr.position + "' to move to position '" + move.substr(2, 2) + "'");
+                    }
+                    else {
+                        std::pair<int, int> vector = curr.createColumnVector(move.substr(2, 2));
 
-                    clearAndDraw(board);
-                    //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                        if (curr.name == "KING") {
+                            isVectorValid = curr.validateOneAround(vector);
+                        }
+                        else if (curr.name == "QUEN") {
+                            if (curr.validateOneAround(vector) || curr.validateDiagonal(vector) || curr.validateStraight(vector))
+                                isVectorValid = true;
+                        }
+                        else if (curr.name == "KNHT") {
+                            isVectorValid = curr.validateJumps(vector);
+                        }
+                        else if (curr.name == "BSHP") {
+                            isVectorValid = curr.validateDiagonal(vector);
+                        }
+                        else if (curr.name == "ROOK") {
+                            isVectorValid = curr.validateStraight(vector);
+                        }
+                        else if (curr.name == "PAWN") {
+                            isVectorValid = curr.validateStep(vector);
+                        }
+                        
+                        if (isVectorValid) {
+                            board = swap(board, move.substr(0, 2), move.substr(2, 4));
+
+                            clearAndDraw(board);
+                            //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+
+                            isTurnOver = true;
+                            isDarkTurn = !isDarkTurn;
+                        }
+                        else {
+                            clearAndDraw(board);
+                            out("The move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
+                        }
+                        
+                        out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                    }
                 }
                 else {
                     clearAndDraw(board);
-                    out("The move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
+                    out("The piece on position '" + curr.position + "' is not your piece to move");
                 }
-                out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
             }
-        }
-        else {
-            clearAndDraw(board);
-            out("Input is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nThe 2 coordinates must be different.\ne.g: d2g5\n");
+            else {
+                clearAndDraw(board);
+                out("Input is invalid, it should match the following pattern:\n<coordinate of piece to move><coordinate of where to move to>\nThe 2 coordinates must be different.\ne.g: d2g5\n");
+            }
         }
     }
 }

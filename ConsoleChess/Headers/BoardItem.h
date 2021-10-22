@@ -104,7 +104,7 @@ class BoardItem
         };
 
         bool validateStep(std::pair<int, int> vector) {
-            if ((vector.first == 0 && vector.second == 1) || (vector.first == 0 && vector.second == 2)) 
+            if ((vector.first == 0 && std::abs(vector.second) == 1) || (vector.first == 0 && std::abs(vector.second) == 2)) 
                 return true;
             
             return false;
@@ -127,7 +127,7 @@ class BoardItem
             else if ((vector.first == -1) && (vector.second == 2 || vector.second == -2)) {
                 return true;
             }
-            else if ((vector.first == -2) && (vector.second == -1 || vector.second == 1)) {
+            else if ((vector.first == -2) && (vector.second == 1 || vector.second == -1)) {
                 return true;
             }
             
