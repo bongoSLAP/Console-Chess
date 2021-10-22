@@ -118,6 +118,14 @@ class BoardItem
             return false;
         };
 
+        bool validateStep(std::pair<int, int> vector) {
+            if ((vector.first == 0 && vector.second == 1) || (vector.first == 0 && vector.second == 2)) {
+                return true;
+            }
+            
+            return false;
+        }
+
         bool validateOneAround(std::pair<int, int> vector) {
             if (((vector.first != 0 && std::abs(vector.second) == 1) || (std::abs(vector.first) == 1 && vector.second != 0)) || (std::abs(vector.first) == 1 && std::abs(vector.second) == 1)) {
                 return true;
@@ -143,3 +151,14 @@ class BoardItem
             return false;
         };
 };
+
+/*
+x:  1  y:  2
+x:  1  y: -2
+x:  2  y:  1
+x:  2  y: -1
+x:  2  y: -1
+x: -1  y: -2
+x: -2  y: -1
+x: -2  y:  1
+*/

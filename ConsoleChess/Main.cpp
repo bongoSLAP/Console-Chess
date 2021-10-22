@@ -309,21 +309,56 @@ int main()
 
     while(true) {
         std::string move = lower(input("\nMake your move: "));
+        bool isVectorValid = false;
 
         if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
             std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
 
-            std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(2, 2));
-            out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-
-            if (board[indices.first][indices.second].name == "BSHP") {
-                //board[indices.first][indices.second].validateVector(vector);
+            if (board[indices.first][indices.second].name == "EMTY") {
+                system("clear");
+                drawBoard(board);
+                out("There is no piece on position '" + board[indices.first][indices.second].position + "' to move to position '" + move.substr(2, 2) + "'");
             }
-            
-            board = swap(board, move.substr(0, 2), move.substr(2, 4));
-            system("clear");
-            drawBoard(board);
-            
+            else {
+                std::pair<int, int> vector = board[indices.first][indices.second].createColumnVector(move.substr(2, 2));
+
+                if (board[indices.first][indices.second].name == "KING") {
+                    isVectorValid = board[indices.first][indices.second].validateOneAround(vector);
+                }
+                else if (board[indices.first][indices.second].name == "QUEN") {
+                    if (board[indices.first][indices.second].validateOneAround(vector) || board[indices.first][indices.second].validateDiagonal(vector) || board[indices.first][indices.second].validateStraight(vector)) {
+                        isVectorValid = true;
+                    }
+                    else {
+                        isVectorValid = false;
+                    }
+                }
+                else if (board[indices.first][indices.second].name == "KNHT") {
+                    isVectorValid = board[indices.first][indices.second].validateJumps(vector);
+                }
+                else if (board[indices.first][indices.second].name == "BSHP") {
+                    isVectorValid = board[indices.first][indices.second].validateDiagonal(vector);
+                }
+                else if (board[indices.first][indices.second].name == "ROOK") {
+                    isVectorValid = board[indices.first][indices.second].validateStraight(vector);
+                }
+                else if (board[indices.first][indices.second].name == "PAWN") {
+                    isVectorValid = board[indices.first][indices.second].validateStep(vector);
+                }
+                
+                if (isVectorValid) {
+                    board = swap(board, move.substr(0, 2), move.substr(2, 4));
+
+                    system("clear");
+                    drawBoard(board);
+                    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                }
+                else {
+                    system("clear");
+                    drawBoard(board);
+                    out("\nThe move '" + move + "' is not part of the moveset of the board piece '" + board[indices.first][indices.second].icon + " '");
+                }
+            }
         }
         else {
             system("clear");
