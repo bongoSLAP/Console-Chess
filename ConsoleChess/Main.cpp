@@ -323,6 +323,7 @@ int findLargest(std::pair<int, int> vector) {
     return std::abs(vector.second);
 }
 
+//needs more debugging - c2c4, e2e3, and f1d3 does not move bishop to d3 but d1d3 does move king to d3????? one around not working???
 bool stepThrough(std::pair<int, int> position, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
     int largestAbsolute = findLargest(vector);
     out("largest: " + std::to_string(largestAbsolute) + "\n");
@@ -384,7 +385,7 @@ int main()
                 out("\nLight, it is your turn. ");
             
             std::string move = lower(input("Make your move: "));
-            move = "c2c4";
+            //move = "c2c4";
             bool isVectorValid = false;
 
             if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
@@ -420,10 +421,11 @@ int main()
                         }
                         
                         if (isVectorValid) {
-                            //board = swap(board, move.substr(0, 2), move.substr(2, 4));
-                            stepThrough(indices, vector, board);
+                            if (stepThrough(indices, vector, board)) {
+                                board = swap(board, move.substr(0, 2), move.substr(2, 4));
+                            }
 
-                            //clearAndDraw(board);
+                            clearAndDraw(board);
                             out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
 
                             isTurnOver = true;
