@@ -325,13 +325,16 @@ int findLargest(std::pair<int, int> vector) {
 
 bool stepThrough(std::pair<int, int> position, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
     int largestAbsolute = findLargest(vector);
-    out(std::to_string(largestAbsolute));
+    out("largest: " + std::to_string(largestAbsolute) + "\n");
     int stepX = 0;
     int stepY = 0;
 
+    std::pair<int, int> test = findIndexInVector(board, "c2");
+    out(std::to_string(test.first) + ", " + std::to_string(test.second));
+
     for (int i = 0; i < largestAbsolute; i++) {
-        if (vector.first != stepX) {
-            if (vector.first > 0) {
+        if (vector.second != stepX && vector.second != 0) {
+            if (vector.second > 0) {
                 stepX ++;
             }
             else {
@@ -339,8 +342,8 @@ bool stepThrough(std::pair<int, int> position, std::pair<int, int> vector, std::
             }
         }
         
-        if (vector.second != stepY) {
-            if (vector.second > 0) {
+        if (vector.first != stepY && vector.first != 0) {
+            if (vector.first > 0) {
                 stepY ++;
             }
             else {
@@ -348,8 +351,11 @@ bool stepThrough(std::pair<int, int> position, std::pair<int, int> vector, std::
             }
         }
 
-        if (board[stepX][stepY].name != "EMTY") {
-            out("piece at position '" + board[stepX][stepY].position + "' is blocking the move\n");
+        out("\nstepX: " + std::to_string(position.first - stepX));
+        out("\nstepY: " + std::to_string(1 + position.second - stepY));
+
+        if (board[position.second + stepX][position.first + stepY].name != "EMTY" && i != 0) {
+            out("\npiece at position '" + board[position.second + stepX][position.first  + stepY].position + "' is blocking the move\n");
             return false;
         }
     }
