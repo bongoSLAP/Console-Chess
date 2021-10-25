@@ -163,7 +163,8 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
         board.push_back(generateEmptyRow());
     }
 
-    board.push_back(generatePawnRow(false));
+    board.push_back(generateEmptyRow());
+    //board.push_back(generatePawnRow(false));
     board.push_back(generateMajorPieceRow(false));
 
     return board;
@@ -300,7 +301,7 @@ std::string lower(std::string toBeLowered) {
 }
 
 void clearAndDraw(std::vector<std::vector<BoardItem>> board) {
-    system("clear");
+    //system("clear");
     drawBoard(board);
 }
 
@@ -324,41 +325,48 @@ int findLargest(std::pair<int, int> vector) {
 }
 
 //needs more debugging - c2c4, e2e3, and f1d3 does not move bishop to d3 but d1d3 does move king to d3????? one around not working???
-bool stepThrough(std::pair<int, int> position, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
+bool stepThrough(std::pair<int, int> currentposition, std::pair<int, int> desiredPosition, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
     int largestAbsolute = findLargest(vector);
-    out("largest: " + std::to_string(largestAbsolute) + "\n");
     int stepX = 0;
     int stepY = 0;
 
-    std::pair<int, int> test = findIndexInVector(board, "c2");
-    out(std::to_string(test.first) + ", " + std::to_string(test.second));
-
+    out("largest: " + std::to_string(largestAbsolute) + "\n");
+    
     for (int i = 0; i < largestAbsolute; i++) {
-        if (vector.second != stepX && vector.second != 0) {
-            if (vector.second > 0) {
-                stepX ++;
-            }
-            else {
-                stepX --;
-            }
+        if (vector.second != 0 && vector.second != stepX) {
+            stepX ++;
         }
+
+        if (vector.first != 0 && vector.first != stepY) {
+            stepY ++;
+        }
+
+        out("\nstepX: " + std::to_string(stepX));
+        out("\nstepY: " + std::to_string(stepY) + "\n");
+
+        //-x, y
+        out("\nstepX - currentposition.second: " + std::to_string(currentposition.second - stepX));
+        out("\nstepY - currentposition.first: " + std::to_string(currentposition.first - stepY) + "\n");
+
+        //x, y
+        out("\nstepX + currentposition.second: " + std::to_string(currentposition.second + stepX));
+        out("\nstepY - currentposition.first: " + std::to_string(currentposition.first - stepY) + "\n");
+
+        //x, -y
+        out("\nstepX + currentposition.second: " + std::to_string(currentposition.second + stepX));
+        out("\nstepY + currentposition.first: " + std::to_string(currentposition.first + stepY) + "\n");
         
-        if (vector.first != stepY && vector.first != 0) {
-            if (vector.first > 0) {
-                stepY ++;
-            }
-            else {
-                stepY --;
-            }
-        }
+        //-x, -y
+        out("\nstepX - currentposition.second: " + std::to_string(currentposition.second - stepX));
+        out("\nstepY + currentposition.first: " + std::to_string(currentposition.first + stepY) + "\n");
+        out("***********\ncurrent position - x: " + std::to_string(desiredPosition.second) + ", y: " + std::to_string(desiredPosition.first) + "\n");
 
-        out("\nstepX: " + std::to_string(position.first - stepX));
-        out("\nstepY: " + std::to_string(1 + position.second - stepY));
-
+        /*
         if (board[position.second + stepX][position.first + stepY].name != "EMTY" && i != 0) {
-            out("\npiece at position '" + board[position.second + stepX][position.first  + stepY].position + "' is blocking the move\n");
+            out("\npiece at position '" + board[position.second + stepX][position.first + stepY].position + "' is blocking the move\n");
             return false;
         }
+        */
     }
 
     return true;
@@ -385,7 +393,8 @@ int main()
                 out("\nLight, it is your turn. ");
             
             std::string move = lower(input("Make your move: "));
-            //move = "c2c4";
+            //move = "f1b5";
+            //move = "c1g5";
             bool isVectorValid = false;
 
             if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
@@ -399,6 +408,7 @@ int main()
                     }
                     else {
                         std::pair<int, int> vector = curr.createColumnVector(move.substr(2, 2));
+                        //out("x: " + std::to_string(vector.first) + ", y: " +  std::to_string(vector.second) + "\n");
 
                         if (curr.name == "KING") {
                             isVectorValid = curr.validateOneAround(vector);
@@ -421,9 +431,8 @@ int main()
                         }
                         
                         if (isVectorValid) {
-                            if (stepThrough(indices, vector, board)) {
-                                board = swap(board, move.substr(0, 2), move.substr(2, 4));
-                            }
+                            stepThrough(indices, findIndexInVector(board, move.substr(2, 2)), vector, board);
+                            board = swap(board, move.substr(0, 2), move.substr(2, 4));
 
                             clearAndDraw(board);
                             out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
@@ -432,7 +441,7 @@ int main()
                             isDarkTurn = !isDarkTurn;
                         }
                         else {
-                            clearAndDraw(board);
+                            //clearAndDraw(board);
                             out("The move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
                         }
                         
