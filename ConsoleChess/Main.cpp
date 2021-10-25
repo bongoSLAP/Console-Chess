@@ -307,7 +307,7 @@ void clearAndDraw(std::vector<std::vector<BoardItem>> board) {
 bool coinToss() {
 	int random;
     srand((unsigned)time(0)); //generates random seed
-    random = (rand() % 2) + 1;
+    random = (rand() % 2) + 1; //generates random int of 0 or 1
 
     if (random == 1)
         return true;
@@ -315,16 +315,58 @@ bool coinToss() {
     return false;
 }
 
+int findLargest(std::pair<int, int> vector) {
+    if ((std::abs(vector.first) == std::abs(vector.second)) || (std::abs(vector.first) > std::abs(vector.second))) {
+        return std::abs(vector.first);
+    }
+
+    return std::abs(vector.second);
+}
+
+bool stepThrough(std::pair<int, int> position, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
+    int largestAbsolute = findLargest(vector);
+    out(std::to_string(largestAbsolute));
+    int stepX = 0;
+    int stepY = 0;
+
+    for (int i = 0; i < largestAbsolute; i++) {
+        if (vector.first != stepX) {
+            if (vector.first > 0) {
+                stepX ++;
+            }
+            else {
+                stepX --;
+            }
+        }
+        
+        if (vector.second != stepY) {
+            if (vector.second > 0) {
+                stepY ++;
+            }
+            else {
+                stepY --;
+            }
+        }
+
+        if (board[stepX][stepY].name != "EMTY") {
+            out("piece at position '" + board[stepX][stepY].position + "' is blocking the move\n");
+            return false;
+        }
+    }
+
+    return true;
+}
+
 int main()
 {
-    system("clear");
-    std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
-    
-    board = assignStartPositions(board);
-    drawBoard(board);
     bool isGameFinished = false;
     bool isTurnOver = false;
     bool isDarkTurn = coinToss();
+    std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
+    
+    board = assignStartPositions(board);
+    clearAndDraw(board);
+
 
     while(!isGameFinished) {
         isTurnOver = false;
@@ -336,13 +378,14 @@ int main()
                 out("\nLight, it is your turn. ");
             
             std::string move = lower(input("Make your move: "));
+            move = "c2c4";
             bool isVectorValid = false;
 
             if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
                 std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
                 BoardItem curr = board[indices.first][indices.second];
 
-                if (curr.isDark == isDarkTurn) {
+                //if (curr.isDark == isDarkTurn) {
                     if (curr.name == "EMTY") {
                         clearAndDraw(board);
                         out("There is no piece on position '" + curr.position + "' to move to position '" + move.substr(2, 2) + "'");
@@ -371,10 +414,11 @@ int main()
                         }
                         
                         if (isVectorValid) {
-                            board = swap(board, move.substr(0, 2), move.substr(2, 4));
+                            //board = swap(board, move.substr(0, 2), move.substr(2, 4));
+                            stepThrough(indices, vector, board);
 
-                            clearAndDraw(board);
-                            //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                            //clearAndDraw(board);
+                            out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
 
                             isTurnOver = true;
                             isDarkTurn = !isDarkTurn;
@@ -384,13 +428,13 @@ int main()
                             out("The move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
                         }
                         
-                        out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                        //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
                     }
-                }
+                /*}
                 else {
                     clearAndDraw(board);
                     out("The piece on position '" + curr.position + "' is not your piece to move");
-                }
+                }*/
             }
             else {
                 clearAndDraw(board);
