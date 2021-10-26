@@ -359,13 +359,13 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
 
         out("\nstepX: " + std::to_string(stepX));
         out("\nstepY: " + std::to_string(stepY) + "\n");
+
+        out("\nstepX + currentposition.second: " + std::to_string(currentPosition.second + stepX));
+        out("\nstepY - currentposition.first: " + std::to_string(currentPosition.first - stepY) + "\n");
     }
     out("***********\ncurrent position - x: " + std::to_string(currentPosition.second) + ", y: " + std::to_string(currentPosition.first) + "\n");
 
     out("***********\ndesired position - x: " + std::to_string(desiredPosition.second) + ", y: " + std::to_string(desiredPosition.first) + "\n");
-
-    out("\nstepX + currentposition.second: " + std::to_string(currentPosition.second + stepX));
-    out("\nstepY + currentposition.first: " + std::to_string(currentPosition.first + stepY) + "\n");
 
     out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
 
@@ -432,7 +432,7 @@ int main()
                         
                         if (isVectorValid) {
                             stepThrough(indices, findIndexInVector(board, move.substr(2, 2)), vector, board);
-                            //board = swap(board, move.substr(0, 2), move.substr(2, 4));
+                            board = swap(board, move.substr(0, 2), move.substr(2, 4));
 
                             clearAndDraw(board);
                             //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
