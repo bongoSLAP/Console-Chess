@@ -192,8 +192,8 @@ std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board,
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
             if (board[i][j].position == position) {
-                indices.first = i;
-                indices.second = j;
+                indices.first = i; //y
+                indices.second = j; //x
 
                 return indices;
             }
@@ -324,50 +324,50 @@ int findLargest(std::pair<int, int> vector) {
     return std::abs(vector.second);
 }
 
+bool isPositive(int toFind) {
+    if (toFind > 0) 
+        return true;
+    else
+        return false;
+}
+
 //needs more debugging - c2c4, e2e3, and f1d3 does not move bishop to d3 but d1d3 does move king to d3????? one around not working???
-bool stepThrough(std::pair<int, int> currentposition, std::pair<int, int> desiredPosition, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
+bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desiredPosition, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
     int largestAbsolute = findLargest(vector);
     int stepX = 0;
     int stepY = 0;
+    std::pair<int, int> indicesToVerify;
 
     out("largest: " + std::to_string(largestAbsolute) + "\n");
     
     for (int i = 0; i < largestAbsolute; i++) {
-        if (vector.second != 0 && vector.second != stepX) {
-            stepX ++;
+        if (vector.first != 0 && vector.first != stepX) {
+            if (isPositive(vector.first)) 
+                stepX ++;
+            else 
+                stepX --;
         }
 
-        if (vector.first != 0 && vector.first != stepY) {
-            stepY ++;
+        if (vector.second != 0 && vector.second != stepY) {
+            if (isPositive(vector.second)) 
+                stepY ++;
+            else 
+                stepY --;
         }
+
+        //VECTOR IS X, Y BUT CURRENT + DESIRED POSITION IS Y, X, CONFUSING ME AF
 
         out("\nstepX: " + std::to_string(stepX));
         out("\nstepY: " + std::to_string(stepY) + "\n");
-
-        //-x, y
-        out("\nstepX - currentposition.second: " + std::to_string(currentposition.second - stepX));
-        out("\nstepY - currentposition.first: " + std::to_string(currentposition.first - stepY) + "\n");
-
-        //x, y
-        out("\nstepX + currentposition.second: " + std::to_string(currentposition.second + stepX));
-        out("\nstepY - currentposition.first: " + std::to_string(currentposition.first - stepY) + "\n");
-
-        //x, -y
-        out("\nstepX + currentposition.second: " + std::to_string(currentposition.second + stepX));
-        out("\nstepY + currentposition.first: " + std::to_string(currentposition.first + stepY) + "\n");
-        
-        //-x, -y
-        out("\nstepX - currentposition.second: " + std::to_string(currentposition.second - stepX));
-        out("\nstepY + currentposition.first: " + std::to_string(currentposition.first + stepY) + "\n");
-        out("***********\ncurrent position - x: " + std::to_string(desiredPosition.second) + ", y: " + std::to_string(desiredPosition.first) + "\n");
-
-        /*
-        if (board[position.second + stepX][position.first + stepY].name != "EMTY" && i != 0) {
-            out("\npiece at position '" + board[position.second + stepX][position.first + stepY].position + "' is blocking the move\n");
-            return false;
-        }
-        */
     }
+    out("***********\ncurrent position - x: " + std::to_string(currentPosition.second) + ", y: " + std::to_string(currentPosition.first) + "\n");
+
+    out("***********\ndesired position - x: " + std::to_string(desiredPosition.second) + ", y: " + std::to_string(desiredPosition.first) + "\n");
+
+    out("\nstepX + currentposition.second: " + std::to_string(currentPosition.second + stepX));
+    out("\nstepY + currentposition.first: " + std::to_string(currentPosition.first + stepY) + "\n");
+
+    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
 
     return true;
 }
@@ -432,10 +432,10 @@ int main()
                         
                         if (isVectorValid) {
                             stepThrough(indices, findIndexInVector(board, move.substr(2, 2)), vector, board);
-                            board = swap(board, move.substr(0, 2), move.substr(2, 4));
+                            //board = swap(board, move.substr(0, 2), move.substr(2, 4));
 
                             clearAndDraw(board);
-                            out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                            //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
 
                             isTurnOver = true;
                             isDarkTurn = !isDarkTurn;
@@ -445,7 +445,7 @@ int main()
                             out("The move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
                         }
                         
-                        //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                        //out("x: " + std::to_string(vector.second) + "\ny: " +  std::to_string(vector.first) + "\n");
                     }
                 /*}
                 else {
