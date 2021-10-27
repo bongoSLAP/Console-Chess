@@ -301,7 +301,7 @@ std::string lower(std::string toBeLowered) {
 }
 
 void clearAndDraw(std::vector<std::vector<BoardItem>> board) {
-    system("clear");
+    //system("clear");
     drawBoard(board);
 }
 
@@ -338,6 +338,10 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
     std::pair<int, int> indicesToVerify;
 
     out("largest: " + std::to_string(largestAbsolute) + "\n");
+    out("***********\ncurrent position - x: " + std::to_string(currentPosition.second) + ", y: " + std::to_string(currentPosition.first) + "\n");
+    out("***********\ndesired position - x: " + std::to_string(desiredPosition.second) + ", y: " + std::to_string(desiredPosition.first) + "\n");
+
+    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
     
     for (int i = 0; i < largestAbsolute; i++) {
         if (vector.first != 0 && vector.first != stepX) {
@@ -354,23 +358,28 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
                 stepY --;
         }
 
-        /*
         out("\nstepX: " + std::to_string(stepX));
         out("\nstepY: " + std::to_string(stepY) + "\n");
 
         out("\nstepX + currentposition.second: " + std::to_string(currentPosition.second + stepX));
         out("\nstepY - currentposition.first: " + std::to_string(currentPosition.first - stepY) + "\n");
-        */
+
+        if (currentPosition.second + stepX != desiredPosition.second || currentPosition.first - stepY != desiredPosition.first) {
+            out("cuurent BI: " + board[currentPosition.first - stepY][currentPosition.second + stepX].name + "\n"); 
+            if (board[currentPosition.first - stepY][currentPosition.second + stepX].name != "EMTY") {
+                out("not empty\n");
+                return false;
+            }
+        }
+        else if (currentPosition.second + stepX == desiredPosition.second && currentPosition.first - stepY == desiredPosition.first) {
+            out("valid\n");
+            return true;
+        }
+
+        //c2c4 e2e4 f1d3 d1d5
+
+        
     }
-    /*
-    out("***********\ncurrent position - x: " + std::to_string(currentPosition.second) + ", y: " + std::to_string(currentPosition.first) + "\n");
-
-    out("***********\ndesired position - x: " + std::to_string(desiredPosition.second) + ", y: " + std::to_string(desiredPosition.first) + "\n");
-
-    out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-    */
-
-    return true;
 }
 
 int main()
@@ -400,7 +409,7 @@ int main()
                 std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
                 BoardItem curr = board[indices.first][indices.second];
 
-                if (curr.isDark == isDarkTurn) {
+                //if (curr.isDark == isDarkTurn) {
                     if (curr.name == "EMTY") {
                         clearAndDraw(board);
                         out("There is no piece on position '" + curr.position + "' to move to position '" + move.substr(2, 2) + "'");
@@ -430,14 +439,16 @@ int main()
                         }
                         
                         if (isVectorValid) {
-                            stepThrough(indices, findIndexInVector(board, move.substr(2, 2)), vector, board);
-                            board = swap(board, move.substr(0, 2), move.substr(2, 4));
+                            if (stepThrough(indices, findIndexInVector(board, move.substr(2, 2)), vector, board)) {
+                                board = swap(board, move.substr(0, 2), move.substr(2, 2));
+                                clearAndDraw(board);
+                                //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
 
-                            clearAndDraw(board);
-                            //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-
-                            isTurnOver = true;
-                            isDarkTurn = !isDarkTurn;
+                                isTurnOver = true;
+                                isDarkTurn = !isDarkTurn;
+                            }
+                            else 
+                                out("The path of the piece '" + curr.icon + "' on the way to '" + move.substr(2, 2) + "' is being blocked by a piece");
                         }
                         else {
                             //clearAndDraw(board);
@@ -446,11 +457,11 @@ int main()
                         
                         //out("x: " + std::to_string(vector.second) + "\ny: " +  std::to_string(vector.first) + "\n");
                     }
-                }
+                /*}
                 else {
                     clearAndDraw(board);
                     out("The piece on position '" + curr.position + "' is not your piece to move");
-                }
+                }*/
             }
             else {
                 clearAndDraw(board);
