@@ -103,8 +103,15 @@ class BoardItem
             return false;
         };
 
-        bool validateStep(std::pair<int, int> vector) {
-            if ((vector.first == 0 && std::abs(vector.second) == 1) || (vector.first == 0 && std::abs(vector.second) == 2)) 
+        bool validateStep(std::pair<int, int> vector, bool isDark) {
+            int direction;
+
+            if (isDark)
+                direction = -1;
+            else
+                direction = 1;
+
+            if ((vector.first == 0 && vector.second == direction) || (vector.first == 0 && vector.second == direction * 2))
                 return true;
             
             return false;

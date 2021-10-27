@@ -163,8 +163,8 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
         board.push_back(generateEmptyRow());
     }
 
-    board.push_back(generateEmptyRow());
-    //board.push_back(generatePawnRow(false));
+    //board.push_back(generateEmptyRow());
+    board.push_back(generatePawnRow(false));
     board.push_back(generateMajorPieceRow(false));
 
     return board;
@@ -301,7 +301,7 @@ std::string lower(std::string toBeLowered) {
 }
 
 void clearAndDraw(std::vector<std::vector<BoardItem>> board) {
-    //system("clear");
+    system("clear");
     drawBoard(board);
 }
 
@@ -331,7 +331,6 @@ bool isPositive(int toFind) {
         return false;
 }
 
-//needs more debugging - c2c4, e2e3, and f1d3 does not move bishop to d3 but d1d3 does move king to d3????? one around not working???
 bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desiredPosition, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
     int largestAbsolute = findLargest(vector);
     int stepX = 0;
@@ -355,19 +354,21 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
                 stepY --;
         }
 
-        //VECTOR IS X, Y BUT CURRENT + DESIRED POSITION IS Y, X, CONFUSING ME AF
-
+        /*
         out("\nstepX: " + std::to_string(stepX));
         out("\nstepY: " + std::to_string(stepY) + "\n");
 
         out("\nstepX + currentposition.second: " + std::to_string(currentPosition.second + stepX));
         out("\nstepY - currentposition.first: " + std::to_string(currentPosition.first - stepY) + "\n");
+        */
     }
+    /*
     out("***********\ncurrent position - x: " + std::to_string(currentPosition.second) + ", y: " + std::to_string(currentPosition.first) + "\n");
 
     out("***********\ndesired position - x: " + std::to_string(desiredPosition.second) + ", y: " + std::to_string(desiredPosition.first) + "\n");
 
     out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+    */
 
     return true;
 }
@@ -393,22 +394,20 @@ int main()
                 out("\nLight, it is your turn. ");
             
             std::string move = lower(input("Make your move: "));
-            //move = "f1b5";
-            //move = "c1g5";
             bool isVectorValid = false;
 
             if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
                 std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
                 BoardItem curr = board[indices.first][indices.second];
 
-                //if (curr.isDark == isDarkTurn) {
+                if (curr.isDark == isDarkTurn) {
                     if (curr.name == "EMTY") {
                         clearAndDraw(board);
                         out("There is no piece on position '" + curr.position + "' to move to position '" + move.substr(2, 2) + "'");
                     }
                     else {
                         std::pair<int, int> vector = curr.createColumnVector(move.substr(2, 2));
-                        //out("x: " + std::to_string(vector.first) + ", y: " +  std::to_string(vector.second) + "\n");
+                        out("x: " + std::to_string(vector.first) + ", y: " +  std::to_string(vector.second) + "\n");
 
                         if (curr.name == "KING") {
                             isVectorValid = curr.validateOneAround(vector);
@@ -427,7 +426,7 @@ int main()
                             isVectorValid = curr.validateStraight(vector);
                         }
                         else if (curr.name == "PAWN") {
-                            isVectorValid = curr.validateStep(vector);
+                            isVectorValid = curr.validateStep(vector, curr.isDark);
                         }
                         
                         if (isVectorValid) {
@@ -447,11 +446,11 @@ int main()
                         
                         //out("x: " + std::to_string(vector.second) + "\ny: " +  std::to_string(vector.first) + "\n");
                     }
-                /*}
+                }
                 else {
                     clearAndDraw(board);
                     out("The piece on position '" + curr.position + "' is not your piece to move");
-                }*/
+                }
             }
             else {
                 clearAndDraw(board);
