@@ -282,6 +282,24 @@ std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
+std::vector<std::vector<BoardItem>> take(std::vector<std::vector<BoardItem>> board, std::string positionFrom, std::string positionTo) {
+    std::pair<int, int> indexFrom = findIndexInVector(board, positionFrom);
+    std::pair<int, int> indexTo = findIndexInVector(board, positionTo);
+    BoardItem temp = board[indexTo.first][indexTo.second];
+    
+    BoardItem empty;
+    empty.setName("EMTY");
+    empty.setIcon();
+    
+    board[indexTo.first][indexTo.second] = board[indexFrom.first][indexFrom.second];
+    board[indexTo.first][indexTo.second].position = positionTo;
+
+    board[indexFrom.first][indexFrom.second] = empty;
+    board[indexFrom.first][indexFrom.second].position = positionFrom;
+
+    return board;
+}
+
 std::string lower(std::string toBeLowered) {
     std::string lowerString = "";
     std::smatch matchLetters;
@@ -335,7 +353,6 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
     int largestAbsolute = findLargest(vector);
     int stepX = 0;
     int stepY = 0;
-    std::pair<int, int> indicesToVerify;
 
     out("largest: " + std::to_string(largestAbsolute) + "\n");
     out("***********\ncurrent position - x: " + std::to_string(currentPosition.second) + ", y: " + std::to_string(currentPosition.first) + "\n");
@@ -406,16 +423,21 @@ int main()
             bool isVectorValid = false;
 
             if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
-                std::pair<int, int> indices = findIndexInVector(board, move.substr(0, 2));
-                BoardItem curr = board[indices.first][indices.second];
+                std::string currentString = move.substr(0, 2);
+                std::pair<int, int> currentIndices = findIndexInVector(board, currentString);
+                BoardItem curr = board[currentIndices.first][currentIndices.second];
+
+                std::string desiredString = move.substr(2, 2);
+                std::pair<int, int> desiredIndices = findIndexInVector(board, desiredString);
+                BoardItem des = board[desiredIndices.first][desiredIndices.second];
 
                 //if (curr.isDark == isDarkTurn) {
                     if (curr.name == "EMTY") {
                         clearAndDraw(board);
-                        out("There is no piece on position '" + curr.position + "' to move to position '" + move.substr(2, 2) + "'");
+                        out("There is no piece on position '" + curr.position + "' to move to position '" + desiredString + "'");
                     }
                     else {
-                        std::pair<int, int> vector = curr.createColumnVector(move.substr(2, 2));
+                        std::pair<int, int> vector = curr.createColumnVector(desiredString);
                         out("x: " + std::to_string(vector.first) + ", y: " +  std::to_string(vector.second) + "\n");
 
                         if (curr.name == "KING") {
@@ -439,8 +461,14 @@ int main()
                         }
                         
                         if (isVectorValid) {
-                            if (stepThrough(indices, findIndexInVector(board, move.substr(2, 2)), vector, board)) {
-                                board = swap(board, move.substr(0, 2), move.substr(2, 2));
+                            if (stepThrough(currentIndices, desiredIndices, vector, board)) {
+                                //need to consider castling and eventually change this
+                                if (des.name != "EMTY") {
+                                    board = swap(board, currentString, desiredString);
+                                }
+                                else
+                                    board = take(board, currentString, desiredString);
+
                                 clearAndDraw(board);
                                 //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
 
@@ -448,7 +476,7 @@ int main()
                                 isDarkTurn = !isDarkTurn;
                             }
                             else 
-                                out("The path of the piece '" + curr.icon + "' on the way to '" + move.substr(2, 2) + "' is being blocked by a piece");
+                                out("The path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by a piece");
                         }
                         else {
                             //clearAndDraw(board);
