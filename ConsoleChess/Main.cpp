@@ -13,6 +13,11 @@ const int yLength = 3;
 const int yLineOverflow = 9; //the vertical lines displace x axis by 9 spaces
 const int pieceOverflow = 1; //each board piece displaces x axis by 1 space
 
+std::vector<std::vector<std::string>> takenPieces = {
+    {""},
+    {""}
+};
+
 int rowCount = 0;
 int itemInRowCount = 0;
 
@@ -158,6 +163,7 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
 
     board.push_back(generateMajorPieceRow(true));
     board.push_back(generatePawnRow(true));
+    //board.push_back(generateEmptyRow());
 
     for (int i = 0; i < emptyRowAmount; i++) {
         board.push_back(generateEmptyRow());
@@ -403,13 +409,55 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
     }
 }
 
+/*
+                if (takenPieces[0].size() != 1) {
+                    out(" You have taken:");
+
+                    for (int i = 1; i < takenPieces[0].size(); i++) {
+                        out(" " + takenPieces[0][i]);
+                    }
+                }
+
+                if (takenPieces[1].size() != 1) {
+                    out(" You have lost:");
+
+                    for (int i = 1; i < takenPieces[1].size(); i++) {
+                        out(" " + takenPieces[1][i]);
+                    }
+                }
+*/
+
+void outputTakes(bool isDark) {
+    int index = (isDark) ? 0 : 1;
+
+    if (takenPieces[index].size() != 1) {
+        out(" You have taken:");
+
+        for (int i = 1; i < takenPieces[index].size(); i++) {
+            out(" " + takenPieces[index][i]);
+        }
+    }
+}
+
+void outputLosses(bool isDark) {
+    int index = (isDark) ? 0 : 1;
+    
+    if (takenPieces[index].size() != 1) {
+        out(" You have lost:");
+
+        for (int i = 1; i < takenPieces[index].size(); i++) {
+            out(" " + takenPieces[index][i]);
+        }
+    }
+}
+
 int main()
 {
     bool isGameFinished = false;
     bool isTurnOver = false;
     bool isDarkTurn = coinToss();
     std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
-    
+
     board = assignStartPositions(board);
     clearAndDraw(board);
 
@@ -418,12 +466,18 @@ int main()
         isTurnOver = false;
 
         while(!isTurnOver) {
-            if (isDarkTurn)
-                out("\nDark, it is your turn. ");
-            else
-                out("\nLight, it is your turn. ");
-            
-            std::string move = lower(input("Make your move: "));
+            if (isDarkTurn) {
+                out("\nDark, it is your turn.");
+                outputTakes(true);
+                outputLosses(false);
+            }
+            else {
+                out("\nLight, it is your turn.");
+                outputTakes(false);
+                outputLosses(true);
+            }
+
+            std::string move = lower(input("\nMake your move: "));
             bool isVectorValid = false;
 
             if (validateLength(move) && validateChars(move) && validateNoMove(move)) {
@@ -465,31 +519,36 @@ int main()
                         }
                         
                         if (isVectorValid) {
-                                if (stepThrough(currentIndices, desiredIndices, vector, board) || curr.name == "KNHT") {
-                                    //need to consider castling and eventually change this
-                                    if (des.name == "EMTY") {
-                                        board = swap(board, currentString, desiredString);
+                            if (stepThrough(currentIndices, desiredIndices, vector, board) || curr.name == "KNHT") {
+                                //need to consider castling and eventually change this
+                                if (des.name == "EMTY") {
+                                    board = swap(board, currentString, desiredString);
+                                    isTurnOver = true;
+                                    isDarkTurn = !isDarkTurn;
+                                    clearAndDraw(board);
+                                }
+                                else {
+                                    if (des.isDark != isDarkTurn) {
+                                        if (curr.isDark) 
+                                            takenPieces[0].push_back(des.icon);
+                                        else
+                                            takenPieces[1].push_back(des.icon);
+
+                                        board = take(board, currentString, desiredString);
                                         isTurnOver = true;
                                         isDarkTurn = !isDarkTurn;
                                         clearAndDraw(board);
                                     }
                                     else {
-                                        if (des.isDark != isDarkTurn) {
-                                            board = take(board, currentString, desiredString);
-                                            isTurnOver = true;
-                                            isDarkTurn = !isDarkTurn;
-                                            clearAndDraw(board);
-                                        }
-                                        else {
-                                            clearAndDraw(board);
-                                            out("you cannot take your own piece '" + des.icon + "'");
-                                        }
+                                        clearAndDraw(board);
+                                        out("you cannot take your own piece '" + des.icon + "'");
                                     }
-    
-                                    //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
                                 }
-                                else 
-                                    out("The path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece");
+
+                                //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+                            }
+                            else 
+                                out("The path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece");
                         }
                         else {
                             clearAndDraw(board);
