@@ -1,3 +1,47 @@
+/*
+TODO (in order):
+    + save game
+        - figure out a notation + algorithm to save the state of the game to the board (board state, takes/losses, whos turn it is) to save to a text file with the date + time + (gamemode?) as filename, save to folder called /saves
+        - update this file using such algorithm after each valid move is made
+        - create an algorithm to read this save file and apply the data to the game should the users want to load it in future
+        - create a menu for the users to choose from a list of saves
+        ! required because non-paying replit users terminal sleeps and runtime memory is reset
+
+    + pawn promotion to either bishop, knight, rook or queen when it reaches opposing x axis of board
+        - after every pawn move check to see whether the piece moved is in the last opposing row of 2d board vector (if dark pawn, board[7], if light pawn, board[0])
+        - if so, output a menu to select from above 4 pieces
+        - replace pawn with selected piece of same colour and then move to opponents turn (no extra turns after promotion)
+        ! required because fundamental part of game
+
+    + peasant revolt game mode
+        - https://www.chessvariants.com/large.dir/peasantrevolt.html
+        - quite easy to do as i only have to change board layout, no rules need to be changed
+        - add menu option
+        ~ not required but would be good to add variety
+
+    + add castling condition
+        - to castle there have to be no pieces between the King and the Rook on the side youre castling on.
+        ~ not as required as it was added to chess much later for the purpose of speeding up games
+
+    + add option to resign
+        - after each move give the user the option to input a string that declares they want to resign
+        - halt game loop and assert opponent as winner if they resign
+        ~ kind of required but player can just physically give up and close window
+
+    + work out when king is in check
+        - use vectors + stepthrough to figure out and notify player when king is in check
+        - maybe highlight some things in red when king is in check
+        ~ would be helpful but not technically required as this does not exist in real life chess, may be too complex for time i have left
+    
+    + work out when the game is stalemate (draw)
+        - use vectors + stepthrough to figure out end game in stalemate
+        x probably too complex for time i have left
+    
+    + add timer
+        x not sure how to do this as i would need to update console each second which would clear inputs each second
+        x probably a way to do this without losing input idk
+*/
+
 #include <iostream>
 #include <string> 
 #include <vector>
@@ -450,8 +494,7 @@ void congratulations(std::vector<std::vector<BoardItem>> board, bool winner) {
     out("for winning the match!");
 }
 
-int main()
-{
+int main() {
     bool isGameFinished = false;
     bool isTurnOver = false;
     bool isDarkTurn = coinToss();
@@ -575,3 +618,4 @@ int main()
     
     congratulations(board, isDarkWinner);
 }
+
