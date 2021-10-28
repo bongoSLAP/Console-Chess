@@ -319,7 +319,7 @@ std::string lower(std::string toBeLowered) {
 }
 
 void clearAndDraw(std::vector<std::vector<BoardItem>> board) {
-    //system("clear");
+    system("clear");
     drawBoard(board);
 }
 
@@ -354,11 +354,13 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
     int stepX = 0;
     int stepY = 0;
 
+    /*
     out("largest: " + std::to_string(largestAbsolute) + "\n");
     out("***********\ncurrent position - x: " + std::to_string(currentPosition.second) + ", y: " + std::to_string(currentPosition.first) + "\n");
     out("***********\ndesired position - x: " + std::to_string(desiredPosition.second) + ", y: " + std::to_string(desiredPosition.first) + "\n");
 
     out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
+    */
     
     for (int i = 0; i < largestAbsolute; i++) {
         if (vector.first != 0 && vector.first != stepX) {
@@ -375,21 +377,23 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
                 stepY --;
         }
 
+        /*
         out("\nstepX: " + std::to_string(stepX));
         out("\nstepY: " + std::to_string(stepY) + "\n");
 
         out("\nstepX + currentposition.second: " + std::to_string(currentPosition.second + stepX));
         out("\nstepY - currentposition.first: " + std::to_string(currentPosition.first - stepY) + "\n");
+        */
 
         if (currentPosition.second + stepX != desiredPosition.second || currentPosition.first - stepY != desiredPosition.first) {
-            out("cuurent BI: " + board[currentPosition.first - stepY][currentPosition.second + stepX].name + "\n"); 
+            //out("cuurent BI: " + board[currentPosition.first - stepY][currentPosition.second + stepX].name + "\n"); 
             if (board[currentPosition.first - stepY][currentPosition.second + stepX].name != "EMTY") {
-                out("not empty\n");
+                //out("not empty\n");
                 return false;
             }
         }
         else if (currentPosition.second + stepX == desiredPosition.second && currentPosition.first - stepY == desiredPosition.first) {
-            out("valid\n");
+            //out("valid\n");
             return true;
         }
 
@@ -431,14 +435,14 @@ int main()
                 std::pair<int, int> desiredIndices = findIndexInVector(board, desiredString);
                 BoardItem des = board[desiredIndices.first][desiredIndices.second];
 
-                //if (curr.isDark == isDarkTurn) {
+                if (curr.isDark == isDarkTurn) {
                     if (curr.name == "EMTY") {
                         clearAndDraw(board);
                         out("There is no piece on position '" + curr.position + "' to move to position '" + desiredString + "'");
                     }
                     else {
                         std::pair<int, int> vector = curr.createColumnVector(desiredString);
-                        out("x: " + std::to_string(vector.first) + ", y: " +  std::to_string(vector.second) + "\n");
+                        //out("x: " + std::to_string(vector.first) + ", y: " +  std::to_string(vector.second) + "\n");
 
                         if (curr.name == "KING") {
                             isVectorValid = curr.validateOneAround(vector);
@@ -461,35 +465,44 @@ int main()
                         }
                         
                         if (isVectorValid) {
-                            if (stepThrough(currentIndices, desiredIndices, vector, board)) {
-                                //need to consider castling and eventually change this
-                                if (des.name != "EMTY") {
-                                    board = swap(board, currentString, desiredString);
+                                if (stepThrough(currentIndices, desiredIndices, vector, board) || curr.name == "KNHT") {
+                                    //need to consider castling and eventually change this
+                                    if (des.name == "EMTY") {
+                                        board = swap(board, currentString, desiredString);
+                                        isTurnOver = true;
+                                        isDarkTurn = !isDarkTurn;
+                                        clearAndDraw(board);
+                                    }
+                                    else {
+                                        if (des.isDark != isDarkTurn) {
+                                            board = take(board, currentString, desiredString);
+                                            isTurnOver = true;
+                                            isDarkTurn = !isDarkTurn;
+                                            clearAndDraw(board);
+                                        }
+                                        else {
+                                            clearAndDraw(board);
+                                            out("you cannot take your own piece '" + des.icon + "'");
+                                        }
+                                    }
+    
+                                    //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
                                 }
-                                else
-                                    board = take(board, currentString, desiredString);
-
-                                clearAndDraw(board);
-                                //out("x: " + std::to_string(vector.first) + "\ny: " +  std::to_string(vector.second) + "\n");
-
-                                isTurnOver = true;
-                                isDarkTurn = !isDarkTurn;
-                            }
-                            else 
-                                out("The path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by a piece");
+                                else 
+                                    out("The path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece");
                         }
                         else {
-                            //clearAndDraw(board);
+                            clearAndDraw(board);
                             out("The move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
                         }
                         
                         //out("x: " + std::to_string(vector.second) + "\ny: " +  std::to_string(vector.first) + "\n");
                     }
-                /*}
+                }
                 else {
                     clearAndDraw(board);
                     out("The piece on position '" + curr.position + "' is not your piece to move");
-                }*/
+                }
             }
             else {
                 clearAndDraw(board);
