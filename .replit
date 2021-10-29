@@ -1,2 +1,2 @@
 language = "cpp"
-run = "clang++-7 -pthread -std=c++17 ConsoleChess/Main.cpp -o main && ./main"
+run = "clang++-7 -pthread -lstdc++fs -std=c++17 ConsoleChess/Main.cpp -lstdc++fs -o main && ./main"

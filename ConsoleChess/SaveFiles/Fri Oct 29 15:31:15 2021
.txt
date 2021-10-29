@@ -1,0 +1,11 @@
+ROOK.true, BSHP.false, BSHP.true, EMTY.true, KING.true, BSHP.true, KNHT.true, ROOK.true, 
+EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, 
+EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, 
+EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, 
+EMTY.false, EMTY.false, EMTY.false, QUEN.true, EMTY.false, EMTY.true, EMTY.false, EMTY.false, 
+EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, 
+EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, EMTY.false, 
+ROOK.false, KNHT.false, EMTY.false, EMTY.false, KING.false, BSHP.false, KNHT.false, ROOK.false, 
+, ♛, 
+, ♘, 
+true

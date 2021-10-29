@@ -32,6 +32,10 @@ TODO (in order):
         - use vectors + stepthrough to figure out and notify player when king is in check
         - maybe highlight some things in red when king is in check
         ~ would be helpful but not technically required as this does not exist in real life chess, may be too complex for time i have left
+
+    + flip board each turn 
+        - flip the board so that each player is making their moves from the perspective of the bottom of the board
+        - this is mainly so that dark has 
     
     + work out when the game is stalemate (draw)
         - use vectors + stepthrough to figure out end game in stalemate
@@ -49,6 +53,10 @@ TODO (in order):
 #include <regex>
 #include <chrono>
 #include <thread>
+#include <iostream>
+#include <fstream>
+#include <ctime>
+#include <filesystem>
 
 #include "Headers/BoardItem.h"
 
@@ -66,6 +74,8 @@ std::vector<std::vector<std::string>> takenPieces = {
 
 int rowCount = 0;
 int itemInRowCount = 0;
+
+std::string currentFile;
 
 void out(std::string message) {
     std::cout << message;
@@ -213,15 +223,15 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     int emptyRowAmount = 4;
 
     board.push_back(generateMajorPieceRow(true));
-    board.push_back(generatePawnRow(true));
-    //board.push_back(generateEmptyRow());
+    //board.push_back(generatePawnRow(true));
+    board.push_back(generateEmptyRow());
 
     for (int i = 0; i < emptyRowAmount; i++) {
         board.push_back(generateEmptyRow());
     }
 
-    //board.push_back(generateEmptyRow());
-    board.push_back(generatePawnRow(false));
+    board.push_back(generateEmptyRow());
+    //board.push_back(generatePawnRow(false));
     board.push_back(generateMajorPieceRow(false));
 
     return board;
@@ -494,15 +504,82 @@ void congratulations(std::vector<std::vector<BoardItem>> board, bool winner) {
     out("for winning the match!");
 }
 
+void updateSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
+    std::ofstream save(currentFile, std::ofstream::out | std::ofstream::trunc); //truc deleted contents
+    
+    for (int i = 0; i < board.size(); i++) {
+        for (int j = 0; j < board[i].size(); j++) {
+            save << board[i][j].name + "." + boolToString(board[i][j].isDark) + ", ";
+        }
+
+        save << "\n";
+    }
+
+    for (int i = 0; i < takenPieces.size(); i++) {
+        for (int j = 0; j < takenPieces[i].size(); j++) {
+            save << takenPieces[i][j] + ", ";
+        }
+
+        save << "\n";
+    } 
+
+    save << boolToString(isDarkTurn);
+    save.close();
+}
+
+void newSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
+    time_t present = time(0);
+    char* presentDate = ctime(&present);
+    std::string dateString(presentDate);
+
+    currentFile = "ConsoleChess/SaveFiles/" + dateString + ".txt";
+    std::ofstream save(currentFile);
+    save.close();
+
+    updateSave(board, isDarkTurn);
+}
+
 int main() {
     bool isGameFinished = false;
     bool isTurnOver = false;
-    bool isDarkTurn = coinToss();
-    bool isDarkWinner;
-    std::vector<std::vector<BoardItem>> board = initialiseBoardStructure();
+    bool isLoadChoiceValid = false;
+    bool isSaveChoiceValid = false;
 
-    board = assignStartPositions(board);
-    clearAndDraw(board);
+    bool isDarkTurn;
+    bool isDarkWinner;
+    std::vector<std::vector<BoardItem>> board;
+
+    system("clear");
+
+    while(!isLoadChoiceValid) {
+        std::string loadChoice = lower(input("Would you like to load a save? (y/n)"));
+
+        if (loadChoice == "y") {
+            int counter = 0;
+            isLoadChoiceValid = true;
+
+            for (const auto & file : std::filesystem::directory_iterator("ConsoleChess/SaveFiles/")) {
+                out(std::to_string(counter) + ". ");
+                out(file.path());
+                out("\n");
+            }
+
+            std::string loadChoice = lower(input("Use the numpad to select a choice:"));
+        }
+        else if (loadChoice == "n") {
+            isLoadChoiceValid = true;
+            isDarkTurn = coinToss();
+
+            board = initialiseBoardStructure();
+            board = assignStartPositions(board);
+            clearAndDraw(board);
+
+            newSave(board, isDarkTurn);
+        }
+        else {
+            out("Answer 'y' for yes and n for 'no'");
+        }
+    }
 
     while(!isGameFinished) {
         isTurnOver = false;
@@ -587,15 +664,18 @@ int main() {
                                             isGameFinished = true;
                                             isDarkWinner = isDarkTurn;
                                         }
+
+                                        
                                     }
                                     else {
                                         clearAndDraw(board);
                                         out("you cannot take your own piece '" + des.icon + "'");
                                     }
                                 }
+
+                                updateSave(board, isDarkTurn);
                             }
                             else 
-                                clearAndDraw(board);
                                 out("\nThe path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece");
                         }
                         else {
@@ -615,7 +695,7 @@ int main() {
             }
         }
     }
-    
+
     congratulations(board, isDarkWinner);
 }
 
