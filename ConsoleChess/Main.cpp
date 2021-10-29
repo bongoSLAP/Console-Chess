@@ -223,15 +223,15 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     int emptyRowAmount = 4;
 
     board.push_back(generateMajorPieceRow(true));
-    //board.push_back(generatePawnRow(true));
-    board.push_back(generateEmptyRow());
+    board.push_back(generatePawnRow(true));
+    //board.push_back(generateEmptyRow());
 
     for (int i = 0; i < emptyRowAmount; i++) {
         board.push_back(generateEmptyRow());
     }
 
-    board.push_back(generateEmptyRow());
-    //board.push_back(generatePawnRow(false));
+    //board.push_back(generateEmptyRow());
+    board.push_back(generatePawnRow(false));
     board.push_back(generateMajorPieceRow(false));
 
     return board;
@@ -504,12 +504,22 @@ void congratulations(std::vector<std::vector<BoardItem>> board, bool winner) {
     out("for winning the match!");
 }
 
+bool validateNumber(std::string toBeValidated) {
+    std:: smatch matchLetters;
+    std::regex lettersExpression("[^0-9]"); 
+
+    if (std::regex_search(toBeValidated, matchLetters, lettersExpression))
+        return false;
+    
+    return true;
+}
+
 void updateSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
-    std::ofstream save(currentFile, std::ofstream::out | std::ofstream::trunc); //truc deleted contents
+    std::ofstream save(currentFile, std::ofstream::out | std::ofstream::trunc); //trunc deletes contents
     
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
-            save << board[i][j].name + "." + boolToString(board[i][j].isDark) + ", ";
+            save << board[i][j].name + "." + boolToString(board[i][j].isDark) + " ";
         }
 
         save << "\n";
@@ -517,7 +527,7 @@ void updateSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
 
     for (int i = 0; i < takenPieces.size(); i++) {
         for (int j = 0; j < takenPieces[i].size(); j++) {
-            save << takenPieces[i][j] + ", ";
+            save << takenPieces[i][j] + " ";
         }
 
         save << "\n";
@@ -539,32 +549,148 @@ void newSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
     updateSave(board, isDarkTurn);
 }
 
+std::vector<std::string> readFile(std::string fileName) {
+    std::ifstream file(fileName);
+    std::string line;
+    std::vector<std::string> entries;
+  
+    while(getline(file, line)) {
+        entries.push_back(line);
+    }
+
+    file.close();
+    return entries;
+}
+
+std::vector<std::vector<std::string>> readFile2d(std::string fileName) {
+    std::ifstream file(fileName);
+    std::string line;
+    std::vector<std::vector<std::string>> entries2d;
+  
+    while(getline(file, line)) {
+        std::stringstream stream(line);
+        std::string field;
+        std::vector<std::string> rowList;
+
+        while(getline(stream, field, ' ')) {
+            rowList.push_back(field);
+        }
+
+        entries2d.push_back(rowList);        
+    }
+
+    file.close();
+    return entries2d;
+}
+
+std::vector<std::filesystem::path> getPathsInFolder() {
+    std::vector<std::filesystem::path> fileVector;
+
+    for (const auto & file : std::filesystem::directory_iterator("ConsoleChess/SaveFiles/")) {
+        std::filesystem::path path = file.path();
+        fileVector.push_back(path);
+    }
+
+    return fileVector;
+}
+
+void outputSaves(std::vector<std::filesystem::path> fileVector) {
+    int counter = 0;
+
+    for (int i = 0; i < fileVector.size(); i++) {
+        std::string cleaned = std::string(fileVector[i]).substr(23);
+        cleaned = cleaned.substr(0, cleaned.size() - 4);
+
+        out(std::to_string(counter) + ". " + cleaned);
+        counter ++;
+    }
+}
+
 int main() {
     bool isGameFinished = false;
     bool isTurnOver = false;
+
     bool isLoadChoiceValid = false;
     bool isSaveChoiceValid = false;
 
-    bool isDarkTurn;
     bool isDarkWinner;
+    bool isDarkTurn;
     std::vector<std::vector<BoardItem>> board;
 
     system("clear");
 
     while(!isLoadChoiceValid) {
-        std::string loadChoice = lower(input("Would you like to load a save? (y/n)"));
+        std::string loadChoice = lower(input("Would you like to load a save? (y/n): "));
 
         if (loadChoice == "y") {
-            int counter = 0;
-            isLoadChoiceValid = true;
+            system("clear");
 
-            for (const auto & file : std::filesystem::directory_iterator("ConsoleChess/SaveFiles/")) {
-                out(std::to_string(counter) + ". ");
-                out(file.path());
-                out("\n");
+            std::vector<std::filesystem::path> fileVector = getPathsInFolder();
+            if (fileVector.size() != 0) {
+                isLoadChoiceValid = true;
+
+                while(!isSaveChoiceValid) {
+                    outputSaves(fileVector);
+                    std::string saveChoice = input("Use the numpad to select a choice: ");
+
+                    if (validateNumber(saveChoice)) {
+                        int choiceInt = stoi(saveChoice);
+
+                        if (choiceInt <= fileVector.size() - 1) {
+                            isSaveChoiceValid = true;
+                            std::vector<std::vector<std::string>> dataGrid = readFile2d(fileVector[choiceInt]);
+
+                            for (int i = 0; i < squaresOnAxes; i++) {
+                                std::vector<BoardItem> row;
+
+                                for (int j = 0; j < squaresOnAxes; j++) {
+                                    BoardItem boardItem;
+                                    boardItem.setName(dataGrid[i][j].substr(0, 4));
+
+                                    if (dataGrid[i][j].substr(5) == "true")
+                                        boardItem.isDark = true;
+                                    else
+                                        boardItem.isDark = false;
+
+                                    boardItem.setIcon();
+                                    row.push_back(boardItem);
+                                }
+                                
+                                board.push_back(row);
+                            }
+
+                            for (int i = 0; i < board.size(); i++) {
+                                for (int j = 0; j < board[i].size(); j++) {
+                                    out(board[i][j].name);
+                                }
+
+                                out("\n");
+                            }
+
+                            takenPieces[0] = dataGrid[8];
+                            takenPieces[1] = dataGrid[9];
+
+                            if (dataGrid[10][0] == "true")
+                                isDarkTurn = true;
+                            else
+                                isDarkTurn = false;
+                            clearAndDraw(board);
+                        }
+                        else {
+                            system("clear");
+                            out("There is no file at the place '" + saveChoice + "'\n\n"); 
+                        }
+                    }
+                    else {
+                        system("clear");
+                        out("'" + saveChoice + "' is not a valid choice\n\n");
+                    }
+                }
             }
-
-            std::string loadChoice = lower(input("Use the numpad to select a choice:"));
+            else {
+                system("clear");
+                out("There are no saves\n");
+            }
         }
         else if (loadChoice == "n") {
             isLoadChoiceValid = true;
@@ -577,12 +703,14 @@ int main() {
             newSave(board, isDarkTurn);
         }
         else {
-            out("Answer 'y' for yes and n for 'no'");
+            system("clear");
+            out("Answer 'y' for yes and 'n' for no\n");
         }
     }
 
     while(!isGameFinished) {
         isTurnOver = false;
+        //system("clear");
 
         while(!isTurnOver) {
             if (isDarkTurn) {
@@ -664,8 +792,6 @@ int main() {
                                             isGameFinished = true;
                                             isDarkWinner = isDarkTurn;
                                         }
-
-                                        
                                     }
                                     else {
                                         clearAndDraw(board);
@@ -698,4 +824,3 @@ int main() {
 
     congratulations(board, isDarkWinner);
 }
-
