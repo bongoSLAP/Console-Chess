@@ -233,7 +233,7 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     return board;
 } 
 
-std::vector<std::vector<BoardItem>> assignStartPositions(std::vector<std::vector<BoardItem>> board) {
+std::vector<std::vector<BoardItem>> assignPositions(std::vector<std::vector<BoardItem>> board) {
     std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
     std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
 
@@ -634,6 +634,7 @@ int main() {
 
                         if (choiceInt <= fileVector.size() - 1) {
                             isSaveChoiceValid = true;
+                            currentFile = fileVector[choiceInt];
                             std::vector<std::vector<std::string>> dataGrid = readFile2d(fileVector[choiceInt]);
 
                             for (int i = 0; i < squaresOnAxes; i++) {
@@ -655,7 +656,7 @@ int main() {
                                 board.push_back(row);
                             }
 
-                            board = assignStartPositions(board);
+                            board = assignPositions(board);
 
                             takenPieces[0] = dataGrid[8];
                             takenPieces[1] = dataGrid[9];
@@ -686,7 +687,7 @@ int main() {
             isDarkTurn = coinToss();
 
             board = initialiseBoardStructure();
-            board = assignStartPositions(board);
+            board = assignPositions(board);
 
             newSave(board, isDarkTurn);
         }

@@ -1,5 +1,5 @@
-ROOK.true KNHT.true BSHP.true QUEN.true KING.true BSHP.true KNHT.true ROOK.true 
-PAWN.true PAWN.true PAWN.true EMTY.false PAWN.true PAWN.true PAWN.true PAWN.true 
+ROOK.true KNHT.true BSHP.true QUEN.true EMTY.false BSHP.true KNHT.true ROOK.true 
+PAWN.true PAWN.true PAWN.true KING.true PAWN.true PAWN.true PAWN.true PAWN.true 
 EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false 
 EMTY.false EMTY.false EMTY.false PAWN.true EMTY.false EMTY.false EMTY.false EMTY.false 
 EMTY.false EMTY.false EMTY.false PAWN.false PAWN.false EMTY.false EMTY.false EMTY.false 
@@ -8,4 +8,4 @@ PAWN.false PAWN.false PAWN.false EMTY.false EMTY.false PAWN.false PAWN.false PAW
 ROOK.false KNHT.false BSHP.false QUEN.false KING.false BSHP.false KNHT.false ROOK.false 
  
  
-true
+false
