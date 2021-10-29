@@ -1,11 +1,7 @@
 /*
 TODO (in order):
-    + save game
-        - figure out a notation + algorithm to save the state of the game to the board (board state, takes/losses, whos turn it is) to save to a text file with the date + time + (gamemode?) as filename, save to folder called /saves
-        - update this file using such algorithm after each valid move is made
-        - create an algorithm to read this save file and apply the data to the game should the users want to load it in future
-        - create a menu for the users to choose from a list of saves
-        ! required because non-paying replit users terminal sleeps and runtime memory is reset
+    + pawn takes
+        - if pawn move is at a one-away diagonal infront of an enemy piece, then take this piece
 
     + pawn promotion to either bishop, knight, rook or queen when it reaches opposing x axis of board
         - after every pawn move check to see whether the piece moved is in the last opposing row of 2d board vector (if dark pawn, board[7], if light pawn, board[0])
@@ -659,13 +655,7 @@ int main() {
                                 board.push_back(row);
                             }
 
-                            for (int i = 0; i < board.size(); i++) {
-                                for (int j = 0; j < board[i].size(); j++) {
-                                    out(board[i][j].name);
-                                }
-
-                                out("\n");
-                            }
+                            board = assignStartPositions(board);
 
                             takenPieces[0] = dataGrid[8];
                             takenPieces[1] = dataGrid[9];
@@ -674,22 +664,21 @@ int main() {
                                 isDarkTurn = true;
                             else
                                 isDarkTurn = false;
-                            clearAndDraw(board);
                         }
                         else {
                             system("clear");
-                            out("There is no file at the place '" + saveChoice + "'\n\n"); 
+                            out("There is no file at the place '" + saveChoice + "'.\n\n"); 
                         }
                     }
                     else {
                         system("clear");
-                        out("'" + saveChoice + "' is not a valid choice\n\n");
+                        out("'" + saveChoice + "' is not a valid choice.\n\n");
                     }
                 }
             }
             else {
                 system("clear");
-                out("There are no saves\n");
+                out("There are no saves.\n");
             }
         }
         else if (loadChoice == "n") {
@@ -698,19 +687,21 @@ int main() {
 
             board = initialiseBoardStructure();
             board = assignStartPositions(board);
-            clearAndDraw(board);
 
             newSave(board, isDarkTurn);
         }
         else {
             system("clear");
-            out("Answer 'y' for yes and 'n' for no\n");
+            out("Answer 'y' for yes and 'n' for no.\n");
         }
     }
 
     while(!isGameFinished) {
         isTurnOver = false;
         //system("clear");
+
+
+        clearAndDraw(board);
 
         while(!isTurnOver) {
             if (isDarkTurn) {
@@ -739,7 +730,7 @@ int main() {
                 if (curr.isDark == isDarkTurn) {
                     if (curr.name == "EMTY") {
                         clearAndDraw(board);
-                        out("\nThere is no piece on position '" + curr.position + "' to move to position '" + desiredString + "'");
+                        out("\nThere is no piece on position '" + curr.position + "' to move to position '" + desiredString + "'.");
                     }
                     else {
                         std::pair<int, int> vector = curr.createColumnVector(desiredString);
@@ -795,24 +786,24 @@ int main() {
                                     }
                                     else {
                                         clearAndDraw(board);
-                                        out("you cannot take your own piece '" + des.icon + "'");
+                                        out("you cannot take your own piece '" + des.icon + "'.");
                                     }
                                 }
 
                                 updateSave(board, isDarkTurn);
                             }
                             else 
-                                out("\nThe path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece");
+                                out("\nThe path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece.");
                         }
                         else {
                             clearAndDraw(board);
-                            out("\nThe move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '");
+                            out("\nThe move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '.");
                         }
                     }
                 }
                 else {
                     clearAndDraw(board);
-                    out("\nThe piece on position '" + curr.position + "' is not your piece to move");
+                    out("\nThe piece on position '" + curr.position + "' is not your piece to move.");
                 }
             }
             else {
