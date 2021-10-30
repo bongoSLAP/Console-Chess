@@ -73,6 +73,8 @@ int itemInRowCount = 0;
 
 std::string currentFile;
 
+//+ input and ouput
+
 void out(std::string message) {
     std::cout << message;
 }
@@ -84,6 +86,8 @@ std::string input(std::string message) {
     std::getline(std::cin, put);
     return put;
 }
+
+//+ draw grid
 
 std::string generateIconSpacing(int spacing) {
     std::string whitespace = "";
@@ -173,6 +177,8 @@ void clearAndDraw(std::vector<std::vector<BoardItem>> board, bool isAnimated = f
     drawBoard(board, isAnimated);
 }
 
+//+ generate 2d board vector
+
 std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
     std::vector<BoardItem> majorPieceRow;
     std::vector<std::string> names = {"ROOK", "KNHT", "BSHP", "QUEN", "KING", "BSHP", "KNHT", "ROOK"};
@@ -234,17 +240,7 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     return board;
 }
 
-void outputSaves(std::vector<std::filesystem::path> fileVector) {
-    int counter = 0;
-
-    for (int i = 0; i < fileVector.size(); i++) {
-        std::string cleaned = std::string(fileVector[i]).substr(23);
-        cleaned = cleaned.substr(0, cleaned.size() - 4);
-
-        out(std::to_string(counter) + ". " + cleaned);
-        counter ++;
-    }
-}
+//+ interactions with board
 
 std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board, std::string position) {
     std::pair<int, int> indices;
@@ -296,20 +292,6 @@ std::vector<std::vector<BoardItem>> take(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
-std::vector<std::vector<BoardItem>> assignPositions(std::vector<std::vector<BoardItem>> board) {
-    std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
-    std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
-
-
-    for (int i = 0; i < board.size(); i++) {
-        for (int j = 0; j < board[i].size(); j++) {
-            board[i][j].position = xAxisLabels[j] + yAxisLabels[i];
-        }
-    }
-
-    return board;
-}
-
 int findLargest(std::pair<int, int> vector) {
     if ((std::abs(vector.first) == std::abs(vector.second)) || (std::abs(vector.first) > std::abs(vector.second))) {
         return std::abs(vector.first);
@@ -355,6 +337,8 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
         }
     }
 }
+
+//+ read, write and load save data
 
 std::string boolToString(bool b) {
   return b ? "true" : "false";
@@ -427,6 +411,20 @@ std::vector<std::filesystem::path> getPathsInFolder() {
     return fileVector;
 }
 
+std::vector<std::vector<BoardItem>> assignPositions(std::vector<std::vector<BoardItem>> board) {
+    std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
+    std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
+
+
+    for (int i = 0; i < board.size(); i++) {
+        for (int j = 0; j < board[i].size(); j++) {
+            board[i][j].position = xAxisLabels[j] + yAxisLabels[i];
+        }
+    }
+
+    return board;
+}
+
 std::vector<std::vector<BoardItem>> loadBoard(std::vector<std::vector<BoardItem>> board, std::vector<std::vector<std::string>> dataGrid) {
     for (int i = 0; i < squaresOnAxes; i++) {
         std::vector<BoardItem> row;
@@ -450,6 +448,8 @@ std::vector<std::vector<BoardItem>> loadBoard(std::vector<std::vector<BoardItem>
     board = assignPositions(board);
     return board;
 }
+
+//+ validating inputs
 
 std::string lower(std::string toBeLowered) {
     std::string lowerString = "";
@@ -544,6 +544,8 @@ bool validateChars(std::string input) {
     return true;
 }
 
+//+ miscellaneous methods directly for main
+
 bool coinToss() {
 	int random;
     srand((unsigned)time(0)); //generates random seed
@@ -553,6 +555,18 @@ bool coinToss() {
         return true;
     
     return false;
+}
+
+void outputSaves(std::vector<std::filesystem::path> fileVector) {
+    int counter = 0;
+
+    for (int i = 0; i < fileVector.size(); i++) {
+        std::string cleaned = std::string(fileVector[i]).substr(23);
+        cleaned = cleaned.substr(0, cleaned.size() - 4);
+
+        out(std::to_string(counter) + ". " + cleaned);
+        counter ++;
+    }
 }
 
 void outputTakes(bool isDark) {
