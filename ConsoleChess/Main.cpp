@@ -1,8 +1,5 @@
 /*
 TODO (in order):
-    + pawn takes
-        - if pawn move is at a one-away diagonal infront of an enemy piece, then take this piece
-
     + pawn promotion to either bishop, knight, rook or queen when it reaches opposing x axis of board
         - after every pawn move check to see whether the piece moved is in the last opposing row of 2d board vector (if dark pawn, board[7], if light pawn, board[0])
         - if so, output a menu to select from above 4 pieces
@@ -619,7 +616,6 @@ bool validateMoveset(std::pair<int, int> currentIndices, BoardItem current, Boar
 
         if (desired.name != "EMTY")
             isTake = true;
-            out("is taking");
         
         if ((current.isDark && currentIndices.first == 1) || (!current.isDark && currentIndices.first == 6)) 
             isFirstMove = true;
@@ -670,9 +666,11 @@ int main() {
 
     bool isLoadChoiceValid = false;
     bool isSaveChoiceValid = false;
+    bool isNewSaveChoiceValid = false;
 
     bool isDarkWinner;
     bool isDarkTurn;
+    bool isSaving;
     std::vector<std::vector<BoardItem>> board;
 
     system("clear");
@@ -732,7 +730,23 @@ int main() {
             board = initialiseBoardStructure();
             board = assignPositions(board);
 
-            newSave(board, isDarkTurn);
+            while (!isNewSaveChoiceValid) {
+                std::string newSaveChoice = lower(input("Would you like to save this game? (y/n): "));
+
+                if (newSaveChoice == "y") {
+                    isNewSaveChoiceValid = true;
+                    isSaving = true;
+                    newSave(board, isDarkTurn);
+                }
+                else if (newSaveChoice == "n") {
+                    isNewSaveChoiceValid = true;
+                    isSaving = false;
+                }
+                else {
+                    system("clear");
+                    out("Answer 'y' for yes and 'n' for no.\n");
+                }
+            }
         }
         else {
             system("clear");
@@ -779,7 +793,6 @@ int main() {
 
                         if (validateMoveset(currentIndices, curr, des, vector)) {
                             if (stepThrough(currentIndices, desiredIndices, vector, board) || curr.name == "KNHT") {
-                                //need to consider castling and eventually change this
                                 if (des.name == "EMTY") {
                                     board = swap(board, currentString, desiredString);
                                     isTurnOver = true;
@@ -812,7 +825,8 @@ int main() {
                                     }
                                 }
 
-                                //updateSave(board, isDarkTurn);
+                                if (isSaving)
+                                    updateSave(board, isDarkTurn);
                             }
                             else 
                                 out("\nThe path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece.");
