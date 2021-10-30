@@ -593,7 +593,7 @@ void outputLosses(bool isDark) {
     }
 }
 
-bool validateMoveset(BoardItem current, std::pair<int, int> vector) {
+bool validateMoveset(std::pair<int, int> currentIndices, BoardItem current, BoardItem desired, std::pair<int, int> vector) {
     bool isVectorValid = false;
 
     if (current.name == "KING") {
@@ -613,7 +613,18 @@ bool validateMoveset(BoardItem current, std::pair<int, int> vector) {
         isVectorValid = current.validateStraight(vector);
     }
     else if (current.name == "PAWN") {
-        isVectorValid = current.validateStep(vector, current.isDark);
+        bool isTake = false;
+        bool isFirstMove = false;
+        out(std::to_string(vector.first) + std::to_string(vector.second));
+
+        if (desired.name != "EMTY")
+            isTake = true;
+            out("is taking");
+        
+        if ((current.isDark && currentIndices.first == 1) || (!current.isDark && currentIndices.first == 6)) 
+            isFirstMove = true;
+
+        isVectorValid = current.validateStep(vector, current.isDark, isTake, isFirstMove);
     }
 
     return isVectorValid;
@@ -766,7 +777,7 @@ int main() {
                     else {
                         std::pair<int, int> vector = curr.createColumnVector(desiredString);
 
-                        if (validateMoveset(curr, vector)) {
+                        if (validateMoveset(currentIndices, curr, des, vector)) {
                             if (stepThrough(currentIndices, desiredIndices, vector, board) || curr.name == "KNHT") {
                                 //need to consider castling and eventually change this
                                 if (des.name == "EMTY") {
@@ -801,7 +812,7 @@ int main() {
                                     }
                                 }
 
-                                updateSave(board, isDarkTurn);
+                                //updateSave(board, isDarkTurn);
                             }
                             else 
                                 out("\nThe path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece.");
