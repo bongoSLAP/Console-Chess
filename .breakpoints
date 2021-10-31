@@ -1,3 +1,12 @@
 {
-  "files": {}
+  "files": {
+    "ConsoleChess/Headers/King.h": [
+      {
+        "id": "69bf1d51-a177-4c6b-8813-93798bc06767",
+        "line": 8,
+        "version": 59,
+        "index": 285
+      }
+    ]
+  }
 }

@@ -289,6 +289,17 @@ std::vector<std::vector<BoardItem>> take(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
+std::vector<std::vector<BoardItem>> promote(std::vector<std::vector<BoardItem>> board, std::pair<int, int> desiredIndices, bool isDark, std::string choice) {
+    BoardItem promotion;
+    promotion.setName(choice);
+    promotion.isDark = isDark;
+    promotion.setIcon();
+    
+    board[desiredIndices.first][desiredIndices.second] = promotion;
+
+    return board;
+}
+
 int findLargest(std::pair<int, int> vector) {
     if ((std::abs(vector.first) == std::abs(vector.second)) || (std::abs(vector.first) > std::abs(vector.second))) {
         return std::abs(vector.first);
@@ -589,7 +600,7 @@ void outputLosses(bool isDark) {
         }
     }
 }
-
+                                                        
 bool validateMoveset(std::pair<int, int> currentIndices, BoardItem current, BoardItem desired, std::pair<int, int> vector) {
     bool isVectorValid = false;
 
@@ -756,8 +767,6 @@ int main() {
 
     while(!isGameFinished) {
         isTurnOver = false;
-        //system("clear");
-
         clearAndDraw(board);
 
         while(!isTurnOver) {
@@ -784,11 +793,7 @@ int main() {
                 BoardItem des = board[desiredIndices.first][desiredIndices.second];
 
                 if (curr.isDark == isDarkTurn) {
-                    if (curr.name == "EMTY") {
-                        clearAndDraw(board);
-                        out("\nThere is no piece on position '" + curr.position + "' to move to position '" + desiredString + "'.");
-                    }
-                    else {
+                    if (curr.name != "EMTY") {
                         std::pair<int, int> vector = curr.createColumnVector(desiredString);
 
                         if (validateMoveset(currentIndices, curr, des, vector)) {
@@ -798,6 +803,51 @@ int main() {
                                     isTurnOver = true;
                                     isDarkTurn = !isDarkTurn;
                                     clearAndDraw(board, true);
+
+                                    out("\n")
+
+                                    if (curr.name == "PAWN") {
+                                        bool isPromoting = false;
+                                        bool isPromoteSelectionValid = false;
+
+                                        if (isDarkTurn) {
+                                            if (desiredIndices.first == 7) 
+                                                isPromoting = true;
+                                        }
+                                        else {
+                                            if (desiredIndices.first == 0) 
+                                                isPromoting = true;
+                                        }
+                                        
+                                        out("\nYEAH1");
+                                        while (!isPromoteSelectionValid && isPromoting) {
+                                            out("\nYEAH2");
+                                            std::string promoteChoice = input("\n0. Queen\n1. Knight\n2. Rook\n3. Bishop\nEnter a number to select the piece you would like to promote the pawn to: ");
+                                            std::string promoteName;
+
+                                            if (promoteChoice == "0") {
+                                                isPromoteSelectionValid = true;
+                                                board = promote(board, desiredIndices, isDarkTurn, "QUEN");
+                                            }
+                                            else if (promoteChoice == "1") {
+                                                isPromoteSelectionValid = true;
+                                                board = promote(board, desiredIndices, isDarkTurn, "KNHT");
+                                            }
+                                            else if (promoteChoice == "2") {
+                                                isPromoteSelectionValid = true;
+                                                board = promote(board, desiredIndices, isDarkTurn, "ROOK");
+                                            }
+                                            else if (promoteChoice == "3") {
+                                                isPromoteSelectionValid = true;
+                                                board = promote(board, desiredIndices, isDarkTurn, "BSHP");
+                                            }
+                                            else {
+                                                //clearAndDraw(board);
+                                                out("\n'" + promoteChoice + "' is not a valid choice.");
+                                            }
+                                        }
+                                    }
+
                                 }
                                 else {
                                     if (des.isDark != isDarkTurn) {
@@ -805,7 +855,7 @@ int main() {
                                             takenPieces[0].push_back(des.icon);
                                         else
                                             takenPieces[1].push_back(des.icon);
-
+ 
                                         board = take(board, currentString, desiredString);
 
                                         if (des.name != "KING") {
@@ -825,8 +875,8 @@ int main() {
                                     }
                                 }
 
-                                if (isSaving)
-                                    updateSave(board, isDarkTurn);
+                                //if (isSaving)
+                                //    updateSave(board, isDarkTurn);
                             }
                             else 
                                 out("\nThe path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece.");
@@ -835,6 +885,10 @@ int main() {
                             clearAndDraw(board);
                             out("\nThe move '" + move + "' is not part of the moveset of the board piece '" + curr.icon + " '.");
                         }
+                    }
+                    else {
+                        clearAndDraw(board);
+                        out("\nThere is no piece on position '" + curr.position + "' to move to position '" + desiredString + "'.");
                     }
                 }
                 else {
