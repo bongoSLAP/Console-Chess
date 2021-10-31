@@ -170,7 +170,7 @@ void drawBoard(std::vector<std::vector<BoardItem>> board, bool isAnimated = fals
 }
 
 void clearAndDraw(std::vector<std::vector<BoardItem>> board, bool isAnimated = false) {
-    //system("clear");
+    system("clear");
     drawBoard(board, isAnimated);
 }
 
@@ -289,11 +289,12 @@ std::vector<std::vector<BoardItem>> take(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
-std::vector<std::vector<BoardItem>> promote(std::vector<std::vector<BoardItem>> board, std::pair<int, int> desiredIndices, bool isDark, std::string choice) {
+std::vector<std::vector<BoardItem>> promote(std::vector<std::vector<BoardItem>> board, std::string desiredString, std::pair<int, int> desiredIndices, bool isDark, std::string choice) {
     BoardItem promotion;
     promotion.setName(choice);
     promotion.isDark = isDark;
     promotion.setIcon();
+    promotion.position = desiredString;
     
     board[desiredIndices.first][desiredIndices.second] = promotion;
 
@@ -799,10 +800,6 @@ int main() {
                         if (validateMoveset(currentIndices, curr, des, vector)) {
                             if (stepThrough(currentIndices, desiredIndices, vector, board) || curr.name == "KNHT") {
                                 if (des.name == "EMTY") {
-                                    board = swap(board, currentString, desiredString);
-
-                                    out("\nfirst: " + std::to_string(desiredIndices.first) + " second: " + std::to_string(desiredIndices.second));
-
                                     if (curr.name == "PAWN") {
                                         bool isPromoting = false;
                                         bool isPromoteSelectionValid = false;
@@ -815,39 +812,48 @@ int main() {
                                             if (desiredIndices.first == 0) 
                                                 isPromoting = true;
                                         }
-                                        
-                                        out("\nYEAH1");
-                                        while (!isPromoteSelectionValid && isPromoting) {
-                                            out("\nYEAH2");
-                                            std::string promoteChoice = input("\n0. Queen\n1. Knight\n2. Rook\n3. Bishop\nEnter a number to select the piece you would like to promote the pawn to: ");
-                                            std::string promoteName;
 
-                                            if (promoteChoice == "0") {
-                                                isPromoteSelectionValid = true;
-                                                board = promote(board, desiredIndices, isDarkTurn, "QUEN");
-                                            }
-                                            else if (promoteChoice == "1") {
-                                                isPromoteSelectionValid = true;
-                                                board = promote(board, desiredIndices, isDarkTurn, "KNHT");
-                                            }
-                                            else if (promoteChoice == "2") {
-                                                isPromoteSelectionValid = true;
-                                                board = promote(board, desiredIndices, isDarkTurn, "ROOK");
-                                            }
-                                            else if (promoteChoice == "3") {
-                                                isPromoteSelectionValid = true;
-                                                board = promote(board, desiredIndices, isDarkTurn, "BSHP");
-                                            }
-                                            else {
-                                                //clearAndDraw(board);
-                                                out("\n'" + promoteChoice + "' is not a valid choice.");
+                                        if (isPromoting) {
+                                            while (!isPromoteSelectionValid) {
+                                                std::string promoteChoice = input("\n0. Queen\n1. Knight\n2. Rook\n3. Bishop\nEnter a number to select the piece you would like to promote the pawn to: ");
+                                                std::string promoteName;
+
+                                                if (promoteChoice == "0") {
+                                                    isPromoteSelectionValid = true;
+                                                    board = swap(board, currentString, desiredString);
+                                                    board = promote(board, desiredString, desiredIndices, isDarkTurn, "QUEN");
+                                                }
+                                                else if (promoteChoice == "1") {
+                                                    isPromoteSelectionValid = true;
+                                                    board = swap(board, currentString, desiredString);
+                                                    board = promote(board, desiredString, desiredIndices, isDarkTurn, "KNHT");
+                                                }
+                                                else if (promoteChoice == "2") {
+                                                    isPromoteSelectionValid = true;
+                                                    board = swap(board, currentString, desiredString);
+                                                    board = promote(board, desiredString, desiredIndices, isDarkTurn, "ROOK");
+                                                }
+                                                else if (promoteChoice == "3") {
+                                                    isPromoteSelectionValid = true;
+                                                    board = swap(board, currentString, desiredString);
+                                                    board = promote(board, desiredString, desiredIndices, isDarkTurn, "BSHP");
+                                                }
+                                                else {
+                                                    clearAndDraw(board);
+                                                    out("\n'" + promoteChoice + "' is not a valid choice.");
+                                                }
                                             }
                                         }
-
-                                        isTurnOver = true;
-                                        isDarkTurn = !isDarkTurn;
-                                        clearAndDraw(board, true);
+                                        else
+                                            board = swap(board, currentString, desiredString);
                                     }
+                                    else {
+                                        board = swap(board, currentString, desiredString);
+                                    }
+
+                                    isTurnOver = true;
+                                    isDarkTurn = !isDarkTurn;
+                                    clearAndDraw(board, true);
                                 }
                                 else {
                                     if (des.isDark != isDarkTurn) {
@@ -875,8 +881,8 @@ int main() {
                                     }
                                 }
 
-                                //if (isSaving)
-                                //    updateSave(board, isDarkTurn);
+                                if (isSaving)
+                                    updateSave(board, isDarkTurn);
                             }
                             else 
                                 out("\nThe path of the piece '" + curr.icon + "' on the way to '" + desiredString + "' is being blocked by another piece.");
