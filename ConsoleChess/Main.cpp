@@ -170,7 +170,7 @@ void drawBoard(std::vector<std::vector<BoardItem>> board, bool isAnimated = fals
 }
 
 void clearAndDraw(std::vector<std::vector<BoardItem>> board, bool isAnimated = false) {
-    system("clear");
+    //system("clear");
     drawBoard(board, isAnimated);
 }
 
@@ -800,11 +800,8 @@ int main() {
                             if (stepThrough(currentIndices, desiredIndices, vector, board) || curr.name == "KNHT") {
                                 if (des.name == "EMTY") {
                                     board = swap(board, currentString, desiredString);
-                                    isTurnOver = true;
-                                    isDarkTurn = !isDarkTurn;
-                                    clearAndDraw(board, true);
 
-                                    out("\n")
+                                    out("\nfirst: " + std::to_string(desiredIndices.first) + " second: " + std::to_string(desiredIndices.second));
 
                                     if (curr.name == "PAWN") {
                                         bool isPromoting = false;
@@ -846,8 +843,11 @@ int main() {
                                                 out("\n'" + promoteChoice + "' is not a valid choice.");
                                             }
                                         }
-                                    }
 
+                                        isTurnOver = true;
+                                        isDarkTurn = !isDarkTurn;
+                                        clearAndDraw(board, true);
+                                    }
                                 }
                                 else {
                                     if (des.isDark != isDarkTurn) {
