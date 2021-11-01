@@ -1,11 +1,5 @@
 /*
 TODO (in order):
-    + pawn promotion to either bishop, knight, rook or queen when it reaches opposing x axis of board
-        - after every pawn move check to see whether the piece moved is in the last opposing row of 2d board vector (if dark pawn, board[7], if light pawn, board[0])
-        - if so, output a menu to select from above 4 pieces
-        - replace pawn with selected piece of same colour and then move to opponents turn (no extra turns after promotion)
-        ! required because fundamental part of game
-
     + peasant revolt game mode
         - https://www.chessvariants.com/large.dir/peasantrevolt.html
         - quite easy to do as i only have to change board layout, no rules need to be changed
@@ -88,9 +82,9 @@ std::string input(std::string message) {
 
 std::string generateIconSpacing(int spacing) {
     std::string whitespace = "";
-    for (int i = 0; i < spacing; i++) {
+
+    for (int i = 0; i < spacing; i++) 
         whitespace += " ";
-    }
 
     return whitespace;
 }
@@ -111,9 +105,8 @@ void printXLabels() {
 }
 
 void printXGridline() {
-    for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) {
+    for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) 
         out("―");
-    }
 
     out("\n");
 }
@@ -143,9 +136,8 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
             out(spacing + "|");
         }
 
-        if (i == midPoint) {
+        if (i == midPoint)
             out(spacing + std::to_string(9-rowCount)); //9 inverts numbers
-        }
 
         out("\n");
     }
@@ -155,9 +147,8 @@ void drawBoard(std::vector<std::vector<BoardItem>> board, bool isAnimated = fals
     for (int i = 0; i < squaresOnAxes; i++) {
         printXGridline();
 
-        if (isAnimated) {
+        if (isAnimated)
             std::this_thread::sleep_for(std::chrono::milliseconds(15));
-        }
 
         printYGridline(board);
     }
@@ -224,13 +215,10 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
 
     board.push_back(generateMajorPieceRow(true));
     board.push_back(generatePawnRow(true));
-    //board.push_back(generateEmptyRow());
 
-    for (int i = 0; i < emptyRowAmount; i++) {
+    for (int i = 0; i < emptyRowAmount; i++)
         board.push_back(generateEmptyRow());
-    }
 
-    //board.push_back(generateEmptyRow());
     board.push_back(generatePawnRow(false));
     board.push_back(generateMajorPieceRow(false));
 
@@ -289,12 +277,12 @@ std::vector<std::vector<BoardItem>> take(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
-std::vector<std::vector<BoardItem>> promote(std::vector<std::vector<BoardItem>> board, std::string desiredString, std::pair<int, int> desiredIndices, bool isDark, std::string choice) {
+std::vector<std::vector<BoardItem>> promote(std::vector<std::vector<BoardItem>> board, std::string positionTo, std::pair<int, int> desiredIndices, bool isDark, std::string choice) {
     BoardItem promotion;
     promotion.setName(choice);
     promotion.isDark = isDark;
     promotion.setIcon();
-    promotion.position = desiredString;
+    promotion.position = positionTo;
     
     board[desiredIndices.first][desiredIndices.second] = promotion;
 
@@ -302,18 +290,14 @@ std::vector<std::vector<BoardItem>> promote(std::vector<std::vector<BoardItem>> 
 }
 
 int findLargest(std::pair<int, int> vector) {
-    if ((std::abs(vector.first) == std::abs(vector.second)) || (std::abs(vector.first) > std::abs(vector.second))) {
+    if ((std::abs(vector.first) == std::abs(vector.second)) || (std::abs(vector.first) > std::abs(vector.second)))
         return std::abs(vector.first);
-    }
 
     return std::abs(vector.second);
 }
 
 bool isPositive(int toFind) {
-    if (toFind > 0) 
-        return true;
-    else
-        return false;
+    return (toFind > 0) ? true : false;
 }
 
 bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desiredPosition, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
@@ -322,24 +306,15 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
     int stepY = 0;
     
     for (int i = 0; i < largestAbsolute; i++) {
-        if (vector.first != 0 && vector.first != stepX) {
-            if (isPositive(vector.first)) 
-                stepX ++;
-            else 
-                stepX --;
-        }
+        if (vector.first != 0 && vector.first != stepX) 
+            (isPositive(vector.first)) ? stepX ++ : stepX --;
 
-        if (vector.second != 0 && vector.second != stepY) {
-            if (isPositive(vector.second)) 
-                stepY ++;
-            else 
-                stepY --;
-        }
+        if (vector.second != 0 && vector.second != stepY) 
+            (isPositive(vector.second)) ? stepY ++ : stepY --;
 
         if (currentPosition.second + stepX != desiredPosition.second || currentPosition.first - stepY != desiredPosition.first) {
-            if (board[currentPosition.first - stepY][currentPosition.second + stepX].name != "EMTY") {
+            if (board[currentPosition.first - stepY][currentPosition.second + stepX].name != "EMTY") 
                 return false;
-            }
         }
         else if (currentPosition.second + stepX == desiredPosition.second && currentPosition.first - stepY == desiredPosition.first) {
             return true;
@@ -357,17 +332,15 @@ void updateSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
     std::ofstream save(currentFile, std::ofstream::out | std::ofstream::trunc); //trunc deletes contents
     
     for (int i = 0; i < board.size(); i++) {
-        for (int j = 0; j < board[i].size(); j++) {
+        for (int j = 0; j < board[i].size(); j++)
             save << board[i][j].name + "." + boolToString(board[i][j].isDark) + " ";
-        }
 
         save << "\n";
     }
 
     for (int i = 0; i < takenPieces.size(); i++) {
-        for (int j = 0; j < takenPieces[i].size(); j++) {
+        for (int j = 0; j < takenPieces[i].size(); j++)
             save << takenPieces[i][j] + " ";
-        }
 
         save << "\n";
     } 
@@ -398,9 +371,8 @@ std::vector<std::vector<std::string>> readFile2d(std::string fileName) {
         std::string field;
         std::vector<std::string> rowList;
 
-        while(getline(stream, field, ' ')) {
+        while(getline(stream, field, ' '))
             rowList.push_back(field);
-        }
 
         entries2d.push_back(rowList);        
     }
@@ -425,11 +397,9 @@ std::vector<std::vector<BoardItem>> assignPositions(std::vector<std::vector<Boar
     std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
 
 
-    for (int i = 0; i < board.size(); i++) {
-        for (int j = 0; j < board[i].size(); j++) {
+    for (int i = 0; i < board.size(); i++) 
+        for (int j = 0; j < board[i].size(); j++) 
             board[i][j].position = xAxisLabels[j] + yAxisLabels[i];
-        }
-    }
 
     return board;
 }
@@ -442,10 +412,7 @@ std::vector<std::vector<BoardItem>> loadBoard(std::vector<std::vector<BoardItem>
             BoardItem boardItem;
             boardItem.setName(dataGrid[i][j].substr(0, 4));
 
-            if (dataGrid[i][j].substr(5) == "true")
-                boardItem.isDark = true;
-            else
-                boardItem.isDark = false;
+            (dataGrid[i][j].substr(5) == "true") ? boardItem.isDark = true : boardItem.isDark = false;
 
             boardItem.setIcon();
             row.push_back(boardItem);
@@ -470,9 +437,8 @@ std::string lower(std::string toBeLowered) {
             char lowered = tolower(toBeLowered[i]);
             lowerString += lowered;
         }
-        else {
+        else 
             lowerString += toBeLowered[i];
-        }
     }
 
     return lowerString;    
@@ -481,17 +447,15 @@ std::string lower(std::string toBeLowered) {
 bool validateLength(std::string input) {
     int acceptedLength = 4; // 2 chars each position, 1 char for whitespace
 
-    if (input.size() == acceptedLength) {
+    if (input.size() == acceptedLength)
         return true;
-    } 
 
     return false;
 }
 
 bool validateNoMove(std::string input) {
-    if (input.substr(0, 2) != input.substr(2, 2)) {
+    if (input.substr(0, 2) != input.substr(2, 2)) 
         return true;
-    } 
 
     return false;
 }
@@ -510,9 +474,8 @@ bool validateChars(std::string input) {
     std::smatch matchChars;
     std::regex charsExpression("[^0-8] [^a-h]");
 
-    if (std::regex_search(input, matchChars, charsExpression)) {
+    if (std::regex_search(input, matchChars, charsExpression)) 
         return false;
-    }
 
     std::regex digitsExpression("[^0-8]");
 
@@ -528,27 +491,24 @@ bool validateChars(std::string input) {
         std::sregex_iterator())
     );
     
-    if (digitOccurences > 2 || lettersOccurences > 2) {
+    if (digitOccurences > 2 || lettersOccurences > 2)
         return false;
-    }
 
     std::smatch matchDigits;
 
     std::string inputSecond = input.substr(1, 1);
     std::string inputFourth = input.substr(3, 1);
 
-    if (std::regex_search(inputSecond, matchDigits, digitsExpression) || std::regex_search(inputFourth, matchDigits, digitsExpression)) {
+    if (std::regex_search(inputSecond, matchDigits, digitsExpression) || std::regex_search(inputFourth, matchDigits, digitsExpression))
         return false;
-    }
 
     std::smatch matchLetters;
     
     std::string inputFirst = input.substr(0, 1);
     std::string inputThird = input.substr(2, 1);
 
-    if (std::regex_search(inputFirst, matchLetters, lettersExpression) || std::regex_search(inputThird, matchLetters, lettersExpression)) {
+    if (std::regex_search(inputFirst, matchLetters, lettersExpression) || std::regex_search(inputThird, matchLetters, lettersExpression)) 
         return false;
-    }
     
     return true;
 }
@@ -584,9 +544,8 @@ void outputTakes(bool isDark) {
     if (takenPieces[index].size() != 1) {
         out(" You have taken:");
 
-        for (int i = 1; i < takenPieces[index].size(); i++) {
+        for (int i = 1; i < takenPieces[index].size(); i++)
             out(" " + takenPieces[index][i]);
-        }
     }
 }
 
@@ -596,9 +555,8 @@ void outputLosses(bool isDark) {
     if (takenPieces[index].size() != 1) {
         out(" You have lost:");
 
-        for (int i = 1; i < takenPieces[index].size(); i++) {
+        for (int i = 1; i < takenPieces[index].size(); i++)
             out(" " + takenPieces[index][i]);
-        }
     }
 }
                                                         
@@ -640,10 +598,8 @@ bool validateMoveset(std::pair<int, int> currentIndices, BoardItem current, Boar
 
 void congratulations(std::vector<std::vector<BoardItem>> board, bool winner) {
     std::string flag;
-    if (winner) 
-        flag = "⚐";
-    else
-        flag = "⚑";
+
+    (winner) ? flag = "⚐" : flag = "⚑";
 
     for (int i = 0; i < 3; i++) {
         system("clear");
@@ -655,19 +611,15 @@ void congratulations(std::vector<std::vector<BoardItem>> board, bool winner) {
     out("\n");
     std::this_thread::sleep_for(std::chrono::milliseconds(800));
 
-    for (int j = 0; j < 33; j++) {
+    for (int j = 0; j < 33; j++)
         out(flag + " ");
-    }
 
     out("\n");
     std::this_thread::sleep_for(std::chrono::milliseconds(800));
 
     out("A big congratulations to ");
 
-    if (winner) 
-        out("dark ");
-    else
-        out("light ");
+    (winner) ? out("dark ") : out("light ");
 
     out("for winning the match!");
 }
@@ -714,10 +666,7 @@ int main() {
                             takenPieces[0] = dataGrid[8]; //isDark
                             takenPieces[1] = dataGrid[9]; //!isDark
 
-                            if (dataGrid[10][0] == "true") //isDarkTurn
-                                isDarkTurn = true;
-                            else
-                                isDarkTurn = false;
+                            (dataGrid[10][0] == "true") ? isDarkTurn = true : isDarkTurn = false;
                         }
                         else {
                             system("clear");
@@ -856,11 +805,8 @@ int main() {
                                     clearAndDraw(board, true);
                                 }
                                 else {
-                                    if (des.isDark != isDarkTurn) {
-                                        if (curr.isDark) 
-                                            takenPieces[0].push_back(des.icon);
-                                        else
-                                            takenPieces[1].push_back(des.icon);
+                                    if (des.isDark != isDarkTurn) {                                        
+                                        (curr.isDark) ? takenPieces[0].push_back(des.icon) : takenPieces[1].push_back(des.icon);
  
                                         board = take(board, currentString, desiredString);
 

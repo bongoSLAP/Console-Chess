@@ -14,48 +14,22 @@ class BoardItem
         }
 
         void setIcon() {
-            if (this -> name == "KING") {
-                if (this -> isDark) 
-                    this -> icon = "♔";
-                else 
-                    this -> icon = "♚";
-            }
-            else if (this -> name == "QUEN") {
-                if (this -> isDark) 
-                    this -> icon = "♕";
-                else 
-                    this -> icon = "♛";
-            }
-            else if (this -> name == "KNHT") {
-                if (this -> isDark) 
-                    this -> icon = "♘";               
-                else            
-                    this -> icon = "♞";                
-            }
-            else if (this -> name == "BSHP") {
-                if (this -> isDark) 
-                    this -> icon = "♗"; 
-                else 
-                    this -> icon = "♝";            
-            }
-            else if (this -> name == "ROOK") {
-                if (this -> isDark) 
-                    this -> icon = "♖";          
-                else 
-                    this -> icon = "♜";               
-            }
-            else if (this -> name == "PAWN") {
-                if (this -> isDark) 
-                    this -> icon = "♙";
-                else 
-                    this -> icon = "♟";
-            }
-            else if (this -> name == "EMTY") {
+            if (this -> name == "KING") 
+                (this -> isDark) ? this -> icon = "♔" : this -> icon = "♚";
+            else if (this -> name == "QUEN")       
+                (this -> isDark) ? this -> icon = "♕" : this -> icon = "♛";
+            else if (this -> name == "KNHT") 
+                (this -> isDark) ? this -> icon = "♘" : this -> icon = "♞";             
+            else if (this -> name == "BSHP") 
+                (this -> isDark) ? this -> icon = "♗" : this -> icon = "♝";       
+            else if (this -> name == "ROOK") 
+                (this -> isDark) ? this -> icon = "♖" : this -> icon = "♜";        
+            else if (this -> name == "PAWN")             
+                (this -> isDark) ? this -> icon = "♙" : this -> icon = "♟";
+            else if (this -> name == "EMTY") 
                 this -> icon = " ";
-            }
-            else {
+            else 
                 std::cout << "ERROR: name: " << this -> name << " is unrecognised.";
-            }
         }
 
         int translateXToInt(std::string xAxisLetter) {
@@ -106,10 +80,7 @@ class BoardItem
         bool validateStep(std::pair<int, int> vector, bool isDark, bool isTake, bool isFirstMove) {
             int direction;
 
-            if (isDark)
-                direction = -1;
-            else
-                direction = 1;
+            (isDark) ? direction = -1 : direction = 1;
 
             if (!isTake) {
                 if (vector.first == 0 && vector.second == direction)
@@ -133,18 +104,14 @@ class BoardItem
         };
 
         bool validateJumps(std::pair<int, int> vector) {
-            if ((vector.first == 1) && (vector.second == 2 || vector.second == -2)) {
+            if ((vector.first == 1) && (vector.second == 2 || vector.second == -2)) 
                 return true;
-            }
-            else if ((vector.first == 2) && (vector.second == 1 || vector.second == -1)) {
+            else if ((vector.first == 2) && (vector.second == 1 || vector.second == -1)) 
                 return true;
-            }
-            else if ((vector.first == -1) && (vector.second == 2 || vector.second == -2)) {
+            else if ((vector.first == -1) && (vector.second == 2 || vector.second == -2)) 
                 return true;
-            }
-            else if ((vector.first == -2) && (vector.second == 1 || vector.second == -1)) {
+            else if ((vector.first == -2) && (vector.second == 1 || vector.second == -1)) 
                 return true;
-            }
             
             return false;
         };
