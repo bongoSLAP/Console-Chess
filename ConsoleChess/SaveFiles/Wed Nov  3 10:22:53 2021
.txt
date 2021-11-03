@@ -1,0 +1,11 @@
+ROOK.true KNHT.true BSHP.true EMTY.false KING.true BSHP.true KNHT.true ROOK.true 
+PAWN.true PAWN.true EMTY.false PAWN.true PAWN.true PAWN.true PAWN.true PAWN.true 
+EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false 
+QUEN.true EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false 
+EMTY.false EMTY.false PAWN.true PAWN.false EMTY.false BSHP.false EMTY.false EMTY.false 
+EMTY.false EMTY.false EMTY.false QUEN.false EMTY.false EMTY.false EMTY.false EMTY.false 
+PAWN.false PAWN.false PAWN.false EMTY.false PAWN.false PAWN.false PAWN.false PAWN.false 
+ROOK.false KNHT.false EMTY.false EMTY.false KING.false BSHP.false KNHT.false ROOK.false 
+ 
+ 
+true

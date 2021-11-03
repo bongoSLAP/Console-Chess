@@ -1,11 +1,11 @@
 ROOK.true EMTY.true BSHP.true QUEN.true EMTY.false BSHP.true KNHT.true ROOK.true 
-EMTY.false EMTY.false EMTY.true EMTY.true PAWN.true EMTY.false PAWN.true EMTY.false 
-PAWN.true EMTY.false EMTY.true EMTY.false KING.true PAWN.true EMTY.false EMTY.false 
-EMTY.false EMTY.false EMTY.false PAWN.true EMTY.false EMTY.false EMTY.false PAWN.true 
-EMTY.false EMTY.false PAWN.false KNHT.true EMTY.false BSHP.false EMTY.false EMTY.false 
+EMTY.false EMTY.false EMTY.true EMTY.true PAWN.true EMTY.false EMTY.false EMTY.false 
+PAWN.true EMTY.false EMTY.true EMTY.false PAWN.false PAWN.true PAWN.true EMTY.false 
+EMTY.false EMTY.false EMTY.false EMTY.true EMTY.false EMTY.false EMTY.false PAWN.true 
+EMTY.false EMTY.false EMTY.true KNHT.true EMTY.false BSHP.false EMTY.false EMTY.false 
 EMTY.false EMTY.false EMTY.true EMTY.false EMTY.false EMTY.false EMTY.false EMTY.false 
 PAWN.false PAWN.false EMTY.false EMTY.false EMTY.false PAWN.false PAWN.false PAWN.false 
 ROOK.false KNHT.false EMTY.false EMTY.false KING.false BSHP.false KNHT.false ROOK.false 
  ♛ ♟ ♟ 
- ♙ ♙ 
+ ♙ ♙ ♙ ♔ 
 false

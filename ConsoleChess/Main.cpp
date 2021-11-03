@@ -1,5 +1,5 @@
 /*
-TODO (in order):
+TODO:
     + peasant revolt game mode
         - https://www.chessvariants.com/large.dir/peasantrevolt.html
         - quite easy to do as i only have to change board layout, no rules need to be changed
@@ -36,7 +36,6 @@ TODO (in order):
 #include <iostream>
 #include <string> 
 #include <vector>
-#include <variant>
 #include <regex>
 #include <chrono>
 #include <thread>
@@ -80,6 +79,7 @@ std::string input(std::string message) {
 
 //+ draw grid
 
+//creates a string of whitespace of length passed into
 std::string generateIconSpacing(int spacing) {
     std::string whitespace = "";
 
@@ -89,12 +89,13 @@ std::string generateIconSpacing(int spacing) {
     return whitespace;
 }
 
+//prints letters a-h
 void printXLabels() {
     std::string spacing = generateIconSpacing(gridSpacing / 2);
     std::vector labels = {"a", "b", "c", "d", "e", "f", "g", "h"};
     int labelIndex = 0;
 
-    for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) {
+    for (int i=0; i < (gridSpacing * xWidth) + squaresOnAxes + yLineOverflow; i++) {
         if (i % squaresOnAxes == 0 && i != 0) {
             out(" " + spacing + labels[labelIndex] + spacing);
             labelIndex ++;
@@ -104,13 +105,15 @@ void printXLabels() {
     out("\n");
 }
 
+//prints horizontal line
 void printXGridline() {
-    for (int i=0; i < (gridSpacing * xWidth) + (squaresOnAxes * pieceOverflow) + yLineOverflow; i++) 
+    for (int i=0; i < (gridSpacing * xWidth) + squaresOnAxes + yLineOverflow; i++) 
         out("―");
 
     out("\n");
 }
 
+//prints 3 lines of vertical lines '|' with the middle line also printing icon + spacing
 void printYGridline(std::vector<std::vector<BoardItem>> board) {
     std::string spacing;
     int midPoint = 1;
@@ -143,6 +146,7 @@ void printYGridline(std::vector<std::vector<BoardItem>> board) {
     }
 }
 
+//prints out board with small animation
 void drawBoard(std::vector<std::vector<BoardItem>> board, bool isAnimated = false) {
     for (int i = 0; i < squaresOnAxes; i++) {
         printXGridline();
@@ -160,13 +164,14 @@ void drawBoard(std::vector<std::vector<BoardItem>> board, bool isAnimated = fals
     itemInRowCount = 0;
 }
 
+//clears console then draws board
 void clearAndDraw(std::vector<std::vector<BoardItem>> board, bool isAnimated = false) {
     system("clear");
     drawBoard(board, isAnimated);
 }
 
 //+ generate 2d board vector
-
+//generates a top and bottom vectors of the major pieces
 std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
     std::vector<BoardItem> majorPieceRow;
     std::vector<std::string> names = {"ROOK", "KNHT", "BSHP", "QUEN", "KING", "BSHP", "KNHT", "ROOK"};
@@ -182,6 +187,7 @@ std::vector<BoardItem> generateMajorPieceRow(bool isDark) {
     return majorPieceRow;
 }
 
+//generates a vector of pawns
 std::vector<BoardItem> generatePawnRow(bool isDark) {
     std::vector<BoardItem> pawnRow;
 
@@ -196,6 +202,7 @@ std::vector<BoardItem> generatePawnRow(bool isDark) {
     return pawnRow;
 }
 
+//generates a vector of empty pieces
 std::vector<BoardItem> generateEmptyRow() {
     std::vector<BoardItem> emptyRow;
 
@@ -209,6 +216,7 @@ std::vector<BoardItem> generateEmptyRow() {
     return emptyRow;
 }
 
+//pushes all vectors of pieces into the board vector
 std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
     std::vector<std::vector<BoardItem>> board;
     int emptyRowAmount = 4;
@@ -226,7 +234,7 @@ std::vector<std::vector<BoardItem>> initialiseBoardStructure() {
 }
 
 //+ interactions with board
-
+//finds the index of a piece from its position string in the board
 std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board, std::string position) {
     std::pair<int, int> indices;
     indices.first = -1;
@@ -246,6 +254,7 @@ std::pair<int, int> findIndexInVector(std::vector<std::vector<BoardItem>> board,
     return indices;
 }
 
+//swaps 2 pieces around
 std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> board, std::string positionFrom, std::string positionTo) {
     std::pair<int, int> indexFrom = findIndexInVector(board, positionFrom);
     std::pair<int, int> indexTo = findIndexInVector(board, positionTo);
@@ -260,6 +269,7 @@ std::vector<std::vector<BoardItem>> swap(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
+//replaces desired with an empty piece
 std::vector<std::vector<BoardItem>> take(std::vector<std::vector<BoardItem>> board, std::string positionFrom, std::string positionTo) {
     std::pair<int, int> indexFrom = findIndexInVector(board, positionFrom);
     std::pair<int, int> indexTo = findIndexInVector(board, positionTo);
@@ -277,6 +287,7 @@ std::vector<std::vector<BoardItem>> take(std::vector<std::vector<BoardItem>> boa
     return board;
 }
 
+//replaces desired with a chosen promotion piece
 std::vector<std::vector<BoardItem>> promote(std::vector<std::vector<BoardItem>> board, std::string positionTo, std::pair<int, int> desiredIndices, bool isDark, std::string choice) {
     BoardItem promotion;
     promotion.setName(choice);
@@ -289,6 +300,7 @@ std::vector<std::vector<BoardItem>> promote(std::vector<std::vector<BoardItem>> 
     return board;
 }
 
+//finds the largest of the x and y 
 int findLargest(std::pair<int, int> vector) {
     if ((std::abs(vector.first) == std::abs(vector.second)) || (std::abs(vector.first) > std::abs(vector.second)))
         return std::abs(vector.first);
@@ -296,10 +308,12 @@ int findLargest(std::pair<int, int> vector) {
     return std::abs(vector.second);
 }
 
+//finds if integer is positive or negative (0 not inclusive)
 bool isPositive(int toFind) {
     return (toFind > 0) ? true : false;
 }
 
+//uses vector to traverse the board and see if anything is blocking its path
 bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desiredPosition, std::pair<int, int> vector, std::vector<std::vector<BoardItem>> board) {
     int largestAbsolute = findLargest(vector);
     int stepX = 0;
@@ -323,11 +337,12 @@ bool stepThrough(std::pair<int, int> currentPosition, std::pair<int, int> desire
 }
 
 //+ read, write and load save data
-
+//converts a bool to string
 std::string boolToString(bool b) {
   return b ? "true" : "false";
 } 
 
+//saves the state of the game to a text file
 void updateSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
     std::ofstream save(currentFile, std::ofstream::out | std::ofstream::trunc); //trunc deletes contents
     
@@ -349,6 +364,7 @@ void updateSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
     save.close();
 }
 
+//creates a new text file and saves to it
 void newSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
     time_t present = time(0);
     char* presentDate = ctime(&present);
@@ -361,6 +377,7 @@ void newSave(std::vector<std::vector<BoardItem>> board, bool isDarkTurn) {
     updateSave(board, isDarkTurn);
 }
 
+//reads the text file and pushes to 2d vector
 std::vector<std::vector<std::string>> readFile2d(std::string fileName) {
     std::ifstream file(fileName);
     std::string line;
@@ -381,6 +398,7 @@ std::vector<std::vector<std::string>> readFile2d(std::string fileName) {
     return entries2d;
 }
 
+//gets all saves in save folder
 std::vector<std::filesystem::path> getPathsInFolder() {
     std::vector<std::filesystem::path> fileVector;
 
@@ -392,6 +410,7 @@ std::vector<std::filesystem::path> getPathsInFolder() {
     return fileVector;
 }
 
+//assigns coordinates to each piece on board
 std::vector<std::vector<BoardItem>> assignPositions(std::vector<std::vector<BoardItem>> board) {
     std::vector<std::string> xAxisLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
     std::vector<std::string> yAxisLabels = {"8", "7", "6", "5", "4", "3", "2", "1"}; //backwards to assign smallest from bottom to top
@@ -404,6 +423,7 @@ std::vector<std::vector<BoardItem>> assignPositions(std::vector<std::vector<Boar
     return board;
 }
 
+//loops through text file 2d vector and saves it to the board
 std::vector<std::vector<BoardItem>> loadBoard(std::vector<std::vector<BoardItem>> board, std::vector<std::vector<std::string>> dataGrid) {
     for (int i = 0; i < squaresOnAxes; i++) {
         std::vector<BoardItem> row;
@@ -426,7 +446,7 @@ std::vector<std::vector<BoardItem>> loadBoard(std::vector<std::vector<BoardItem>
 }
 
 //+ validating inputs
-
+//sets string to lowercase
 std::string lower(std::string toBeLowered) {
     std::string lowerString = "";
     std::smatch matchLetters;
@@ -444,6 +464,7 @@ std::string lower(std::string toBeLowered) {
     return lowerString;    
 }
 
+//checks that string is exactly 4 chars
 bool validateLength(std::string input) {
     int acceptedLength = 4; // 2 chars each position, 1 char for whitespace
 
@@ -453,6 +474,7 @@ bool validateLength(std::string input) {
     return false;
 }
 
+//checks that the piece would actually move
 bool validateNoMove(std::string input) {
     if (input.substr(0, 2) != input.substr(2, 2)) 
         return true;
@@ -460,6 +482,7 @@ bool validateNoMove(std::string input) {
     return false;
 }
 
+//validates that string contains only number
 bool validateNumber(std::string toBeValidated) {
     std:: smatch matchLetters;
     std::regex lettersExpression("[^0-9]"); 
@@ -470,6 +493,7 @@ bool validateNumber(std::string toBeValidated) {
     return true;
 }
 
+//validates that string contains only 0-8 a-h, validates that numbers + digits occur exactly twice, validates that letter comes before number
 bool validateChars(std::string input) {
     std::smatch matchChars;
     std::regex charsExpression("[^0-8] [^a-h]");
@@ -514,7 +538,7 @@ bool validateChars(std::string input) {
 }
 
 //+ miscellaneous methods directly for main
-
+//randomly chooses if light or dark goes first
 bool coinToss() {
 	int random;
     srand((unsigned)time(0)); //generates random seed
@@ -526,6 +550,7 @@ bool coinToss() {
     return false;
 }
 
+//outputs the save files in save directory
 void outputSaves(std::vector<std::filesystem::path> fileVector) {
     int counter = 0;
 
@@ -538,6 +563,7 @@ void outputSaves(std::vector<std::filesystem::path> fileVector) {
     }
 }
 
+//outputs taken pieces
 void outputTakes(bool isDark) {
     int index = (isDark) ? 0 : 1;
 
@@ -549,6 +575,7 @@ void outputTakes(bool isDark) {
     }
 }
 
+//outputs lost pieces
 void outputLosses(bool isDark) {
     int index = (isDark) ? 0 : 1;
     
@@ -559,7 +586,8 @@ void outputLosses(bool isDark) {
             out(" " + takenPieces[index][i]);
     }
 }
-                                                        
+
+//validates column vector against moveset of piece                                               
 bool validateMoveset(std::pair<int, int> currentIndices, BoardItem current, BoardItem desired, std::pair<int, int> vector) {
     bool isVectorValid = false;
 
@@ -596,6 +624,7 @@ bool validateMoveset(std::pair<int, int> currentIndices, BoardItem current, Boar
     return isVectorValid;
 }
 
+//announces winner
 void congratulations(std::vector<std::vector<BoardItem>> board, bool winner) {
     std::string flag;
 
@@ -765,7 +794,6 @@ int main() {
                                         if (isPromoting) {
                                             while (!isPromoteSelectionValid) {
                                                 std::string promoteChoice = input("\n0. Queen\n1. Knight\n2. Rook\n3. Bishop\nEnter a number to select the piece you would like to promote the pawn to: ");
-                                                std::string promoteName;
 
                                                 if (promoteChoice == "0") {
                                                     isPromoteSelectionValid = true;
