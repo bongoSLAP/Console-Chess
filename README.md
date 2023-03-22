@@ -1,4 +1,7 @@
 # Advanced Programming 2 - Console Chess
+
+Play it here - https://replit.com/@BongoSLAP/Console-Chess-working
+
 ## Outline
 The main problems I needed to overcome when trying to plan and implement a solution were:
 * Having a set of classes to store the properties and methods for each piece.
@@ -11,7 +14,7 @@ The main problems I needed to overcome when trying to plan and implement a solut
 * Saving and Loading the game. 
 
 ## UML diagram
-[See UML diagram](https://replit.com/@JacobBright/Console-Chess-working#Docs/initial_uml.PNG)
+[See UML diagram](https://replit.com/@BongoSLAP/Console-Chess-working#Docs/initial_uml.PNG)
 
 ## Initial working plan
 My initial approach to implementing the game after I had got the grid printing out correctly was to create a way for the program to understand how to traverse from any one place on the 2d vector to any other place. While playing around with an online chess board editor I realised that the board could be thought of as the top right quadrant (Quadrant I) of a four-quadrant grid:
